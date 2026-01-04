@@ -76,7 +76,7 @@ export const Portfolio: React.FC<PortfolioProps> = ({
                 {project.category.slice(0, 2).map((c) => (
                   <span
                     key={c}
-                    className="text-xs uppercase font-medium text-accent dark:text-accent-dark px-2 py-1 bg-dark-tertiary rounded-md"
+                    className="text-xs uppercase font-medium bg-light-secondary dark:text-accent-dark px-2 py-1 bg-dark-tertiary rounded-md"
                   >
                     {c}
                   </span>

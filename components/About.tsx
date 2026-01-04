@@ -41,13 +41,16 @@ export const About: React.FC = () => {
         <div className="flex flex-col gap-4 h-full">
           <BentoCard title="BACKGROUND" className="flex-grow min-h-[240px]">
             <p className="text-md leading-relaxed text-light-textSec dark:text-dark-textSec">
-              I’m an engineering student passionate about building solutions at
-              the intersection of mechanics, AI, and electronics. I enjoy
-              tackling complex problems through hands-on projects, from CAD to
-              PCB design and computer vision systems to automating workflows for
-              real-world applications. I thrive on interdisciplinary
-              collaboration and creating technologies that combine hardware,
-              software, and practical innovation.
+              Hey, I'm Ansh Gupta and I enjoy tinkering away in a workshop,
+              chasing the rush of adventure sports like rock climbing, and
+              capturing those epic moments through videography. These passions
+              fuel my curiosity and keep me grounded in the real world.
+              <br />
+              <br />
+              I'm an engineering student who builds cool stuff where mechanics,
+              AI, and electronics collide. I love diving into hands-on projects
+              that turn big ideas into reality, whether it's crafting precise
+              CAD models, designing PCBs, or coding.
             </p>
           </BentoCard>
 
@@ -56,15 +59,15 @@ export const About: React.FC = () => {
               {[
                 "CAD",
                 "PCB Design",
-                "Embedded",
-                "React",
-                "Prototyping",
-                "Python",
-                "C++",
+                "Web Development",
+                "Machine learning",
+                "CNC milling",
+                "Wood Working",
+                "3D Printing",
               ].map((skill) => (
                 <span
                   key={skill}
-                  className="px-3 py-1.5 bg-light-textSec dark:bg-dark-tertiary rounded-lg text-xs font-medium text-light-textsc dark:text-dark-textSec dark:border-gray-800"
+                  className="px-3 py-1.5 bg-light-bg dark:bg-dark-tertiary rounded-lg text-sm font-medium text-light-textsc dark:text-dark-textSec dark:border-gray-800"
                 >
                   {skill}
                 </span>
@@ -82,7 +85,7 @@ export const About: React.FC = () => {
                 href="https://github.com/Creator-Logs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-dark-tertiary w-12 h-12 rounded-lg flex items-center justify-center hover:scale-110 transition-transform"
+                className="bg-light-bg dark:bg-dark-tertiary w-12 h-12 rounded-lg flex items-center justify-center hover:scale-110 transition-transform"
                 aria-label="GitHub"
               >
                 <FaGithub
@@ -94,7 +97,7 @@ export const About: React.FC = () => {
                 href="https://www.linkedin.com/in/ansh-gupta-542613255/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-dark-tertiary w-12 h-12 rounded-lg flex items-center justify-center hover:scale-110 transition-transform"
+                className="bg-light-bg dark:bg-dark-tertiary w-12 h-12 rounded-lg flex items-center justify-center hover:scale-110 transition-transform"
                 aria-label="LinkedIn"
               >
                 <FaLinkedin size={28} className="text-[#0077b5]" />
@@ -103,7 +106,7 @@ export const About: React.FC = () => {
                 href="https://www.instagram.com/creatorlogs/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-dark-tertiary w-12 h-12 rounded-lg flex items-center justify-center hover:scale-110 transition-transform"
+                className="bg-light-bg dark:bg-dark-tertiary w-12 h-12 rounded-lg flex items-center justify-center hover:scale-110 transition-transform"
                 aria-label="Instagram"
               >
                 <FaInstagram size={28} className="text-[#E4405F]" />
@@ -112,7 +115,7 @@ export const About: React.FC = () => {
                 href="https://www.youtube.com/@CreatorLogs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-dark-tertiary w-12 h-12 rounded-lg flex items-center justify-center hover:scale-110 transition-transform"
+                className="bg-light-bg dark:bg-dark-tertiary w-12 h-12 rounded-lg flex items-center justify-center hover:scale-110 transition-transform"
                 aria-label="YouTube"
               >
                 <FaYoutube size={28} className="text-[#FF0000]" />
@@ -135,10 +138,10 @@ export const About: React.FC = () => {
           </div>
 
           <BentoCard title="INTERESTS" className="shrink-0">
-            <ul className="text-sm text-light-textSec dark:text-dark-textSec space-y-1">
-              <li>• Generative Design</li>
-              <li>• Brutalist Architecture</li>
-              <li>• Analog Photography</li>
+            <ul className="text-md text-light-textSec dark:text-dark-textSec space-y-1">
+              <li>Videography</li>
+              <li>Rock Climbing</li>
+              <li>Volleyball</li>
             </ul>
           </BentoCard>
         </div>
@@ -188,15 +191,68 @@ export const About: React.FC = () => {
           </BentoCard>
 
           <BentoCard title="TOOLS" className="shrink-0">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-2 gap-2 text-xs font-mono text-light-textSec dark:text-dark-textSec">
-              <div>SolidWorks</div>
-              <div>Altium</div>
-              <div>VS Code</div>
-              <div>Figma</div>
-              <div>Blender</div>
-              <div>Docker</div>
-              <div>Git</div>
-              <div>Notion</div>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(52px,52px))] gap-1 justify-start">
+              {[
+                {
+                  name: "Creo Parametric",
+                  iconUrl: "logos/Creo.svg",
+                },
+                {
+                  name: "Fusion 360",
+                  iconUrl: "logos/Fusion360.svg",
+                },
+                {
+                  name: "Ansys",
+                  iconUrl: "logos/Ansys.svg",
+                },
+                {
+                  name: "Figma",
+                  iconUrl:
+                    "https://upload.wikimedia.org/wikipedia/commons/d/db/Fusion360_Logo.svg",
+                },
+                {
+                  name: "Blender",
+                  iconUrl:
+                    "https://upload.wikimedia.org/wikipedia/commons/d/db/Fusion360_Logo.svg",
+                },
+                {
+                  name: "Docker",
+                  iconUrl:
+                    "https://upload.wikimedia.org/wikipedia/commons/d/db/Fusion360_Logo.svg",
+                },
+                {
+                  name: "Git",
+                  iconUrl:
+                    "https://upload.wikimedia.org/wikipedia/commons/d/db/Fusion360_Logo.svg",
+                },
+                {
+                  name: "Notion",
+                  iconUrl:
+                    "https://upload.wikimedia.org/wikipedia/commons/d/db/Fusion360_Logo.svg",
+                },
+                {
+                  name: "Python",
+                  iconUrl:
+                    "https://upload.wikimedia.org/wikipedia/commons/d/db/Fusion360_Logo.svg",
+                },
+                {
+                  name: "React",
+                  iconUrl:
+                    "https://upload.wikimedia.org/wikipedia/commons/d/db/Fusion360_Logo.svg",
+                },
+              ].map((tool, index) => (
+                <div
+                  key={index}
+                  className="w-[52px] h-[52px] rounded-lg bg-light-bg dark:bg-dark-bg flex items-center justify-center p-3 hover:border-light-textSec/40 dark:hover:border-dark-textSec/40 transition-colors"
+                  title={tool.name}
+                >
+                  <img
+                    src={tool.iconUrl}
+                    alt={tool.name}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              ))}
             </div>
           </BentoCard>
         </div>
