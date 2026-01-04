@@ -42,6 +42,22 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Hero fade-in animations with staggered delays */
+.hero-fade-in-1 {
+  animation: fadeInUp 0.8s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+.hero-fade-in-2 {
+  animation: fadeInUp 0.8s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+.hero-fade-in-3 {
+  animation: fadeInUp 0.8s ease-out 0.5s forwards;
+  opacity: 0;
+}
+
 .website-container {
   scroll-snap-type: y mandatory;
 }

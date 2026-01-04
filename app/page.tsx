@@ -13,18 +13,20 @@ import { projects } from "../constants";
 import { ParallaxProvider } from "react-scroll-parallax";
 
 export default function Home() {
-  const [darkMode, setDarkMode] = useState<boolean>(false);
+  // Initialize with dark mode by default, check localStorage on mount
+  const [darkMode, setDarkMode] = useState<boolean>(true);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  // Initialize theme based on preference
+  // Initialize theme based on localStorage or default to dark
   useEffect(() => {
-    // Check local storage or system preference
     if (typeof window !== "undefined") {
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
+      const stored = localStorage.getItem("darkMode");
+      if (stored !== null) {
+        setDarkMode(stored === "true");
+      } else {
+        // Default to dark mode if no preference stored
         setDarkMode(true);
+        localStorage.setItem("darkMode", "true");
       }
     }
   }, []);
@@ -35,6 +37,10 @@ export default function Home() {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
+    }
+    // Save preference to localStorage
+    if (typeof window !== "undefined") {
+      localStorage.setItem("darkMode", darkMode.toString());
     }
   }, [darkMode]);
 
@@ -53,7 +59,7 @@ export default function Home() {
 
   return (
     <ParallaxProvider>
-      <div class="website-container" id="website-container">
+      <div className="website-container" id="website-container">
         <div className="relative min-h-screen selection:bg-accent selection:text-white">
           {/* Background Grain Effect */}
 

@@ -15,8 +15,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth dark" suppressHydrationWarning>
       <body className={`${inter.variable} bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text antialiased overflow-x-hidden font-sans`}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Check localStorage first, then default to dark mode
+                const stored = localStorage.getItem('darkMode');
+                const isDark = stored !== null ? stored === 'true' : true;
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              })();
+            `,
+          }}
+        />
         {children}
       </body>
     </html>
