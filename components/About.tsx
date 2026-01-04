@@ -123,8 +123,8 @@ export const About: React.FC = () => {
           <div className="flex-grow min-h-[200px] bg-gray-200 dark:bg-gray-800 rounded-[1.5rem] overflow-hidden relative group">
             <div className="relative w-full h-full">
               <img
-                src="/Ansh.png"
-                alt="Portrait"
+                src="/ansh_gupta_portrait.webp"
+                alt="ansh_gupta_portrait"
                 className="w-full h-full grayscale hover:grayscale-[0] object-cover transition-all duration-500 ease-in-out"
               />
               {/* Grain Overlay */}

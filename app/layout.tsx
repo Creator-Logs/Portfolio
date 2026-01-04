@@ -5,8 +5,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Portfolio | Aesthete",
-  description: "A minimalist, aesthetic personal portfolio website featuring bento-grid layouts, fluid transitions, and a focus on visual storytelling.",
+  title: "Creator Logs - Ansh Gupta | Portfolio",
+  description:
+    "Creator Logs by Ansh Gupta: Explore portfolio of innovative engineering projects bringing mechanical, electrical and software engineering together.",
 };
 
 export default function RootLayout({
@@ -16,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth dark" suppressHydrationWarning>
-      <body className={`${inter.variable} bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text antialiased overflow-x-hidden font-sans`}>
+      <body
+        className={`${inter.variable} bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text antialiased overflow-x-hidden font-sans`}
+      >
         <script
           dangerouslySetInnerHTML={{
             __html: `

@@ -1,13 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Parallax } from "react-scroll-parallax";
 
 export const Hero: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(true);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint
+    };
+
+    // Check on mount
+    checkMobile();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", checkMobile);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   return (
-    <section className="relative min-h-screen flex flex-col justify-center pt-32 pb-12">
+    <section className="relative min-h-screen flex flex-col justify-center pt-20 md:pt-28 lg:pt-32">
       <div className="w-full max-w-[1440px] mx-auto space-y-8">
         {/* Intro Text */}
         <div className="max-w-3xl hero-fade-in-1">
-          <p className="font-medium md:text-2xl text-light-textSec dark:text-dark-textSec leading-relaxed">
+          <p className="font-medium text-2xl text-light-textSec dark:text-dark-textSec leading-relaxed">
             Hi, i'm{" "}
             <span className="text-light-text dark:text-dark-text font-semibold">
               Ansh
@@ -18,31 +35,19 @@ export const Hero: React.FC = () => {
         </div>
 
         {/* Visual Container - Parent with Rounding & Overflow Hidden ensures all corners are perfect */}
-        <div
-          style={{
-            WebkitMaskImage: `url(/Overlay.svg)`,
-            maskImage: `url(/Overlay.svg)`,
-            WebkitMaskRepeat: "no-repeat",
-            maskRepeat: "no-repeat",
-            WebkitMaskSize: "contain",
-            maskSize: "contain",
-            WebkitMaskPosition: "center",
-            maskPosition: "center",
-          }}
-          className="w-full mt-12 group overflow-hidden aspect-[4/3] md:aspect-[2/1] hero-fade-in-2"
-        >
-          <Parallax speed={-30}>
+        <div className="w-full mt-12 group overflow-hidden  md:aspect-[2/1] hero-fade-in-2 hero-mask-overlay rounded-lg lg:rounded-none">
+          <Parallax speed={-30} disabled={isMobile}>
             <img
-              src="/Hero.jpg"
-              alt="Hero Image"
+              src="/creator_logs_hero_image.webp"
+              alt="creator_logs_hero_image"
               className="w-full h-full object-cover transition-transform duration-700"
             />
           </Parallax>
         </div>
 
-        <h1 className="text-5xl absolute bottom-24 left-2 md:text-8xl lg:text-[116px] font-semibold tracking-tight text-light-text dark:text-dark-text hero-fade-in-3">
-          Design & Engineer
-          <br />
+        <h1 className="text-[10vw] leading-[1] lg:absolute lg:bottom-28 xl:bottom-20 lg:left-2 md:text-7xl lg:text-[8vw] font-semibold tracking-tight text-light-text dark:text-dark-text hero-fade-in-3">
+          Design & Engineer<span className="lg:hidden"> </span>
+          <br className="hidden lg:block" />
           Products
         </h1>
       </div>
