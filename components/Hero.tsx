@@ -35,7 +35,7 @@ export const Hero: React.FC = () => {
         </div>
 
         {/* Visual Container - Parent with Rounding & Overflow Hidden ensures all corners are perfect */}
-        <div className="w-full mt-12 group overflow-hidden  md:aspect-[2/1] hero-fade-in-2 hero-mask-overlay rounded-lg lg:rounded-none">
+        <div className="relative w-full mt-12 group overflow-hidden md:aspect-[2/1] hero-fade-in-2 hero-mask-overlay rounded-lg lg:rounded-none">
           <Parallax speed={-30} disabled={isMobile}>
             <img
               src="/creator_logs_hero_image.webp"
