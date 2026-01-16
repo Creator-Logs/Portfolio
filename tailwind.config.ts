@@ -19,11 +19,13 @@ const config: Config = {
           secondary: "#FFFFFF",
           text: "#1D1D1F",
           textSec: "#86868B",
+          gray: "#BFBFBF",
         },
         dark: {
           bg: "#1B1B1B",
           secondary: "#252422",
           tertiary: "#2F2E2B",
+          light: "#3D3C3A",
           text: "#F8F8F8",
           textSec: "#8D8D8D",
         },

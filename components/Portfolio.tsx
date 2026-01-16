@@ -1,25 +1,33 @@
-import React, { useState, useMemo } from "react";
-import { Project, Category } from "../types";
+import React, { useState } from "react";
+import { Category } from "../types";
 import { IconArrowRight } from "./Icons";
 
-interface PortfolioProps {
-  projects: Project[];
-  onProjectClick: (project: Project) => void;
-}
+// Static portfolio data
+const PORTFOLIO_ITEMS = [
+  {
+    id: "1",
+    title: "3D Printer",
+    subtitle: "A Core-XY 3D Printer Built From Scratch",
+    thumbnailUrl: "/project_media/3d_printer/printer_hero_image.webp",
+    category: [Category.CAD],
+    link: "portfolio/3d_printer",
+  },
+];
 
-export const Portfolio: React.FC<PortfolioProps> = ({
-  projects,
-  onProjectClick,
-}) => {
+export const Portfolio: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<Category>(Category.ALL);
 
-  const filteredProjects = useMemo(() => {
-    if (activeCategory === Category.ALL) return projects;
-    return projects.filter((p) => p.category.includes(activeCategory));
-  }, [activeCategory, projects]);
+  const filteredProjects =
+    activeCategory === Category.ALL
+      ? PORTFOLIO_ITEMS
+      : PORTFOLIO_ITEMS.filter((p) => p.category.includes(activeCategory));
+
+  const handleProjectClick = (link: string) => {
+    window.location.href = link;
+  };
 
   return (
-    <section id="portfolio" className="scroll-mt-32 min-h-screen">
+    <section id="portfolio" className="scroll-mt-32 min-w-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
         <div>
           <h3 className="text-sm font-semibold text-accent dark:text-accent-dark uppercase tracking-widest mb-2">
@@ -52,7 +60,7 @@ export const Portfolio: React.FC<PortfolioProps> = ({
         {filteredProjects.map((project) => (
           <div
             key={project.id}
-            onClick={() => onProjectClick(project)}
+            onClick={() => handleProjectClick(project.link)}
             className="group cursor-pointer flex flex-col gap-4 animate-fade-in-up"
           >
             {/* Card Thumbnail */}
@@ -60,7 +68,7 @@ export const Portfolio: React.FC<PortfolioProps> = ({
               <img
                 src={project.thumbnailUrl}
                 alt={project.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                className="w-full h-full object-left object-cover transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
 

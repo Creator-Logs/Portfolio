@@ -35,17 +35,17 @@ export const Hero: React.FC = () => {
         </div>
 
         {/* Visual Container - Parent with Rounding & Overflow Hidden ensures all corners are perfect */}
-        <div className="relative w-full mt-12 group overflow-hidden md:aspect-[2/1] hero-fade-in-2 hero-mask-overlay rounded-lg lg:rounded-none">
+        <div className="w-full h-[32vh] group overflow-hidden hero-fade-in-2 rounded-2xl">
           <Parallax speed={-30} disabled={isMobile}>
             <img
               src="/creator_logs_hero_image.webp"
               alt="creator_logs_hero_image"
-              className="w-full h-full object-cover transition-transform duration-700"
+              className="w-full object-cover transition-transform duration-700"
             />
           </Parallax>
         </div>
 
-        <h1 className="text-[10vw] leading-[1] lg:absolute lg:bottom-28 xl:bottom-20 lg:left-2 md:text-7xl lg:text-[8vw] font-semibold tracking-tight text-light-text dark:text-dark-text hero-fade-in-3">
+        <h1 className="text-[10vw] leading-[1] md:text-7xl lg:text-[8vw] font-semibold tracking-tight text-light-text dark:text-dark-text hero-fade-in-3">
           Design & Engineer<span className="lg:hidden"> </span>
           <br className="hidden lg:block" />
           Products
