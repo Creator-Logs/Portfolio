@@ -60,22 +60,12 @@ const App: React.FC = () => {
           />
 
           <main className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20">
-            {selectedProject ? (
-              <ProjectDetail
-                project={selectedProject}
-                onBack={handleBackToHome}
-              />
-            ) : (
-              <div className="flex flex-col gap-24 md:gap-32 pb-24">
-                <Hero />
-                <About />
-                <Portfolio
-                  onProjectClick={handleProjectClick}
-                  projects={projects}
-                />
-                <Contact />
-              </div>
-            )}
+            <div className="flex flex-col gap-24 md:gap-32 pb-24">
+              <Hero />
+              <About />
+              <Portfolio />
+              <Contact />
+            </div>
           </main>
 
           {/* Footer copyright */}
