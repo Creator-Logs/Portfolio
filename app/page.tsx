@@ -72,7 +72,7 @@ export default function Home() {
           />
 
           <main className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20">
-            <div className="flex flex-col gap-24 md:gap-32 pb-24">
+            <div className="flex flex-col gap-24 md:gap-32">
               <Hero />
               <Portfolio />
               <About />
@@ -81,7 +81,7 @@ export default function Home() {
           </main>
 
           {/* Footer copyright */}
-          <footer className="relative z-10 py-8 text-center text-sm text-light-textSec dark:text-dark-textSec border-t border-dark-tertiary dark:border-dark-tertiary mt-12 mx-6 md:mx-20">
+          <footer className="relative z-10 py-8 text-center text-sm text-light-textSec dark:text-dark-textSec border-t border-dark-tertiary dark:border-dark-tertiary mt-2 mx-6 md:mx-20">
             <p>© {new Date().getFullYear()} Creator Logs</p>
           </footer>
         </div>

@@ -16,7 +16,7 @@ export const PrinterGoals: React.FC = () => {
         with high-speed printing performance through careful system-level
         tradeoffs.
       </p>
-      <p className="text-center w-[65vw] landscape:w-[50vw]  text-md md:text-lgfont-regular text-dark-text pt-6">
+      <p className="text-center w-[65vw] landscape:w-[50vw]  text-md md:text-lg font-regular text-dark-text pt-6">
         The printer was built as a flexible rapid-prototyping platform for
         future projects, with a support for future upgrades, iteration, and the
         integration of new tools as requirements evolve.

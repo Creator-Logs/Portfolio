@@ -7,8 +7,8 @@ export const PrinterHero: React.FC = () => {
       id="printer_hero"
       className="w-screen h-screen flex flex-col bg-[#D9D9D9]"
     >
-      <div className="flex-1 flex flex-col bg-[url(/project_media/3d_printer/printer_hero_image_mobile.webp)] landscape:bg-[url(/project_media/3d_printer/printer_hero_image.webp)] bg-no-repeat bg-contain bg-bottom landscape:bg-cover landscape:bg-[20%_center] w-screen landscape:h-screen flex flex-col">
-        <main className="w-full h-full flex-1 z-10 px-12 py-10 mx-auto px-6 landscape:px-12 landscape:px-20 py-2 landscape:py-12 landscape:py-12 flex flex-col">
+      <div className="flex-1 flex flex-col bg-[url(/project_media/3d_printer/printer_hero_image_mobile.webp)] landscape:bg-[url(/project_media/3d_printer/printer_hero_image.webp)] bg-no-repeat bg-contain bg-bottom landscape:bg-cover landscape:bg-[20%_center] w-screen landscape:h-screen">
+        <main className="w-full h-full flex-1 z-10 max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-2 landscape:py-12  flex flex-col">
           <Link
             href="/"
             className="flex items-center gap-2 text-dark-bg hover:text-dark-textSec transition-all duration-300 hover:gap-3 group"

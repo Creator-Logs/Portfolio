@@ -5,9 +5,10 @@ export const PrinterSpecs: React.FC = () => {
   return (
     <section
       id="printer_specs"
-      className="px-12 py-10 mx-auto landscape:px-20 landscape:py-20
-      w-screen h-screen flex bg-light-bg justify-between"
+      className="
+      w-screen h-screen bg-light-bg"
     >
+      <main className="flex justify-between z-10 w-full max-w-[1440px] mx-auto px-6 landscape:px-20 landscape:py-20">
       <div className="h-full">
         <h2 className="text-light-text text-5xl font-medium ">
           Design Specifications
@@ -101,6 +102,7 @@ export const PrinterSpecs: React.FC = () => {
           </div>
         </div>
       </div>
+      </main>
     </section>
   );
 };

@@ -60,8 +60,9 @@ export const About: React.FC = () => {
                 "CAD",
                 "PCB Design",
                 "Web Development",
-                "Machine learning",
-                "CNC milling",
+                "Deep learning",
+                "CNC  Milling",
+                "Lathe Turning",
                 "Wood Working",
                 "3D Printing",
               ].map((skill) => (
@@ -155,35 +156,35 @@ export const About: React.FC = () => {
                 {/* Inner grid for tablet to use width better? Optional. Keeping list simple. */}
                 <div>
                   <div className="flex justify-between items-baseline mb-1">
-                    <h4 className="font-semibold">Senior Product Engineer</h4>
+                    <h4 className="font-semibold">Makerspace Manager</h4>
                     <span className="text-sm text-light-textSec dark:text-dark-textSec">
-                      2023-Present
+                      Jan 2026 - Present
                     </span>
                   </div>
                   <p className="text-sm text-light-textSec dark:text-dark-textSec">
-                    TechCorp Inc.
+                    Technology Entrepreneurship Center
                   </p>
                 </div>
                 <div>
                   <div className="flex justify-between items-baseline mb-1">
-                    <h4 className="font-semibold">Hardware Design Intern</h4>
+                    <h4 className="font-semibold">Cockpit Project Lead</h4>
                     <span className="text-sm text-light-textSec dark:text-dark-textSec">
-                      2022-2023
+                      Aug 2025 - Present
                     </span>
                   </div>
                   <p className="text-sm text-light-textSec dark:text-dark-textSec">
-                    Robotics Lab
+                    Illini Electric Motorsports
                   </p>
                 </div>
                 <div>
                   <div className="flex justify-between items-baseline mb-1">
-                    <h4 className="font-semibold">Freelance Developer</h4>
+                    <h4 className="font-semibold">Data and Automation Intern</h4>
                     <span className="text-sm text-light-textSec dark:text-dark-textSec">
-                      2020-2022
+                      Jun 2024 - Jul 2024
                     </span>
                   </div>
                   <p className="text-sm text-light-textSec dark:text-dark-textSec">
-                    Self-Employed
+                  Hero MotoCorp.
                   </p>
                 </div>
               </div>
