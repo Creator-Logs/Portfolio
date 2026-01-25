@@ -14,10 +14,18 @@ export default function PrinterPage() {
       <PrinterSpecs />
       <PrinterCAD />
       <CoreXY/>
+      <div className="flex w-screen h-screen bg-[url(/project_media/3d_printer/3d_printer_render.webp)] bg-cover items-center">
+      <div className="z-10 w-full max-w-[1440px] mx-auto px-6 landscape:px-6 landscape:py-20">
+      <text className="font-semibold text-dark-text text-7xl">
+  Manufacturing<br />
+  Coming Soon...
+</text>
+
+      </div>
+      
+      </div>
          {/* Footer copyright */}
-       <footer className="relative z-10 py-8 text-center text-sm text-light-textSec dark:text-dark-textSec border-t border-dark-tertiary dark:border-dark-tertiary mt-2 mx-6 md:mx-20">
-            <p>© {new Date().getFullYear()} Creator Logs</p>
-          </footer>
+       
           </div>
   );
 }
