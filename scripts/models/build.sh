@@ -27,7 +27,7 @@ echo "== 1/3 tessellate [$lod] (max surface error $lin mm, $ang deg)"
 "$py" -c "import cascadio, math, sys; cascadio.step_to_glb(sys.argv[1], sys.argv[2], tol_linear=float(sys.argv[3]), tol_angular=math.radians(float(sys.argv[4])))" \
   "$step" "$work/raw/$name.glb" "$lin" "$ang" 2>&1 | grep -v "^RWGltf_CafWriter skipped" || true
 
-echo "== 2/3 Blender: orient, cull never-visible parts, materials, join per material"
+echo "== 2/3 Blender: orient, cull never-visible parts, materials, join per material, bake AO"
 "$blender" -b --factory-startup -P scripts/models/process.py -- "$cfg" "$work/raw/$name.glb" "$work/processed/$name.glb" \
   2>&1 | grep -E "^\[process\]|Error|Traceback"
 

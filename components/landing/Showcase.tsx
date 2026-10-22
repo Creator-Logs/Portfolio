@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { lazy, useCallback, useRef } from "react";
+import { lazy, useCallback, useEffect, useRef } from "react";
 import { SceneBlock } from "@/components/three/SceneBlock";
+import { useThreeState } from "@/components/three/store";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 
@@ -30,6 +31,13 @@ export function Showcase() {
     });
   }, []);
   const progress = useScrollProgress(section, onProgress);
+  const { poster } = useThreeState();
+  useEffect(() => {
+    // progress 0.5 = the wheel square to the camera: the poster is the only visual with reduced motion /
+    // no WebGL (no pin), so it shows the face, not the scroll-start side view
+    const el = section.current!;
+    if (poster === "showcase") window.scrollTo(0, el.offsetTop + (el.offsetHeight - window.innerHeight) / 2);
+  }, [poster]);
 
   return (
     <section

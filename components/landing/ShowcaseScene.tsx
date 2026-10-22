@@ -2,10 +2,11 @@
 
 import { PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import * as THREE from "three";
 import { Model } from "@/components/three/Model";
 import { StudioEnvironment } from "@/components/three/StudioEnvironment";
+import { threeStore } from "@/components/three/store";
 import { useWarmup } from "@/components/three/useWarmup";
 import type { Progress } from "@/hooks/useScrollProgress";
 
@@ -25,6 +26,13 @@ export default function ShowcaseScene({ progress, mobile }: { progress: Progress
 
   // compile + upload while still a screen away (SceneBlock loadMargin), not on the first visible frame
   useWarmup(camera);
+
+  // poster capture (?poster=showcase, scripts/posters.sh): the wheel has loaded; frame at progress 0
+  useEffect(() => {
+    if (threeStore.get().poster !== "showcase") return;
+    const id = setTimeout(() => (document.body.dataset.posterReady = "showcase"), 1500);
+    return () => clearTimeout(id);
+  }, []);
 
   // pivot through the model's centre (GLBs rest on y = 0)
   useLayoutEffect(() => {
@@ -64,10 +72,11 @@ export default function ShowcaseScene({ progress, mobile }: { progress: Progress
           reflections, so this single-object scene gets a brighter environment than the mat. */}
       <StudioEnvironment preset="dark-studio" intensity={2.2} />
       {/* fixed rig: warm key front-left, strong cool-white rim behind-right — the sweep comes from turning */}
-      <directionalLight position={[-1.5, 1.4, 2]} intensity={3} color="#FFD9B0" />
-      <directionalLight position={[2.5, 1, -2.2]} intensity={7} color="#F4F1EC" />
-      <directionalLight position={[-2.5, 0.6, -1.5]} intensity={3} color="#F4F1EC" />
-      <directionalLight position={[1.5, -0.4, 2]} intensity={0.8} color="#FFE6CC" />
+      {/* only the key is warm: black parts must stay black, not bronze */}
+      <directionalLight position={[-1.5, 1.4, 2]} intensity={2.4} color="#FFE7CF" />
+      <directionalLight position={[2.5, 1, -2.2]} intensity={6} color="#EEF2F8" />
+      <directionalLight position={[-2.5, 0.6, -1.5]} intensity={3} color="#F4F4F2" />
+      <directionalLight position={[1.5, -0.4, 2]} intensity={0.6} color="#F2F0EC" />
       <GlowBackdrop />
       <group ref={spin}>
         <group ref={centred}>
@@ -92,7 +101,9 @@ const glowMaterial = new THREE.ShaderMaterial({
     void main() {
       float d = length(vUv - 0.5) * 2.0;
       float a = 1.0 - smoothstep(0.0, 1.0, d);
-      gl_FragColor = vec4(mix(uOuter, uInner, a * a), a);
+      // a dark, wide gradient bands in 8 bits: dither by ~1 LSB (interleaved gradient noise)
+      float n = fract(52.9829189 * fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715)))) - 0.5;
+      gl_FragColor = vec4(mix(uOuter, uInner, a * a) + n * (1.5 / 255.0), a);
     }`,
   transparent: true,
   depthWrite: false,

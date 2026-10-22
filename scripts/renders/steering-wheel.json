@@ -1,0 +1,10 @@
+{
+  "_doc": "Camera/framing for scripts/renders/render_product.py. view = camera direction from the product in Blender axes (x right, -y toward the front/driver side, z up); fill = share of the frame the product's bounding sphere fills.",
+  "view": [-0.5, -1, 0.35],
+  "yaw_deg": 0,
+  "lens": 85,
+  "fill": 1.15,
+  "fstop": 11,
+  "light": 1.0,
+  "exposure": -0.3
+}

@@ -40,7 +40,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SmoothScroll />
         <Nav />
         {/* Above the fixed canvas; 3D shows through transparent View boxes. */}
-        <div className="relative z-[1]">{children}</div>
+        <div className="relative z-[1]" data-page>
+          {children}
+        </div>
         <Footer />
         <Grain />
       </body>

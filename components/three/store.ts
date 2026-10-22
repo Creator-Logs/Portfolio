@@ -8,9 +8,11 @@ type ThreeState = {
   webgl: "unknown" | "ok" | "none";
   contextLost: boolean;
   debug: boolean;
+  /** ?poster[=hero|showcase]: capture mode for scripts/posters.sh (full DPR, canvas only). */
+  poster: string | null;
 };
 
-let state: ThreeState = { webgl: "unknown", contextLost: false, debug: false };
+let state: ThreeState = { webgl: "unknown", contextLost: false, debug: false, poster: null };
 const listeners = new Set<() => void>();
 
 export const threeStore = {
@@ -33,7 +35,7 @@ export function useThreeState() {
 
 // Live-tunable values (written by the ?debug panel, read by scenes each frame / on mount).
 export const tuning = {
-  exposure: 0.9,
+  exposure: 1.0,
   envIntensity: 1,
 };
 

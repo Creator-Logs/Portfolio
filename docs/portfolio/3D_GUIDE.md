@@ -29,6 +29,12 @@ Per-model config: `scripts/models/<slug>.json` (source STEP, up-axis, `rotate_de
    smaller part wins: nudged 0.02 mm out along the shared plane, or grown 0.02 mm (inside the tessellation error).
 4. *Never-visible parts* are removed via a 162-direction ID render (see-through parts never occlude).
 5. *Join per material* → draw calls ≈ number of materials (~10 per model).
+5b. *Baked AO* (2026-10-22, visuals pass): Cycles AO (128 samples, distance 8 % of the model diagonal, every part
+   occludes every other) baked per vertex into a custom `_AO` attribute (u16 after meshopt). CAD tessellations are
+   sparse (flat faces are fans of long triangles from hole rims to the border), so edges longer than the AO
+   resolution (1.2 % of the diagonal; config `ao_resolution_mm`: printer 20, IMU 3) are split first — new vertices
+   lie on existing edges and faces re-triangulate in their own plane, so the shape is exactly unchanged. A UV-atlas
+   bake was tried and rejected: tens of thousands of CAD/scan islands starve any atlas (≤ 37 % coverage).
 6. *Compression*: dedup (**not materials** — names carry presets), weld (bit-exact), prune, meshopt with
    **16-bit positions + 16-bit normals** passed *to meshopt itself* (it re-quantizes at 14/10 bits otherwise).
 7. *QA gate*: render uncompressed vs shipped in the real three.js scene from 3 fixed cameras; PASS < 0.1 % pixels
@@ -47,6 +53,10 @@ Results (2026-10-22):
 | steering-wheel | 601k / 5.2 | 254k / 2.9 | 0.036 % ✅ | 26 hidden parts, 1 duplicate knob; faces +Z = driver side |
 | 3d-printer | 2.26M / 16.0 | 1.16M / 9.0 | 0.052 % ✅ | 33 duplicates, 32 z-fights fixed (mount corner, stickers, label) |
 | imu-wearable | 30k / 0.23 | = detail | 0.001 % ✅ | closed enclosure hides the PCB; STEP missing mesh-body parts |
+
+After the AO bake (step 5b, 2026-10-22): steering-wheel 6.9 / 4.1 MB, 3d-printer 19.9 / 11.4 MB, imu-wearable
+0.55 / 0.55 MB (detail / mat; QA steering-wheel detail 0.006 % ✅). The printer config also `exclude`s one stray
+instance of the 2-64 binding-head screw that sat 62 mm below the bottom tray (it made the printer float).
 
 Mat LOD QA at mat size: views 0/1 ≤ 0.17 %; the 2.4× close-up shows ≤ 0.73 % (highlight edges on small cylinders).
 **Decision (Ansh, 2026-10-22): the landing mat loads the mat LOD only**; detail is for project pages + pinned showcase.
@@ -96,9 +106,14 @@ npx @gltf-transform/cli inspect out.glb   # check tris, textures, size
 - Don't use `--simplify` blindly on mechanical parts — it chews flat faces. Prefer Blender decimate per object.
 - Keep the raw `.blend` and Fusion exports in `assets-src/<slug>/` (gitignored if large).
 
-### 1.4 Posters
-For every 3D block render a **WebP poster** from the same angle (Blender Cycles still, or a Fusion Render) at
-2560px wide, transparent or `--ink` background. Used for LCP, fallback, reduced-motion, and social previews.
+### 1.4 Posters and product stills
+- **Scene posters** (LCP, fallback, reduced motion, context loss) are captured **from the live scene** so the
+  poster → 3D crossfade is seamless: `scripts/posters.sh` (site running) loads `/?poster[=showcase]`, which hides the
+  page DOM, renders at the screenshot's full DPR (desktop @2× = 2880×1800, mobile @3× = 1170×2532) and waits for
+  `body[data-poster-ready]` (all trinkets in + shadow baked). WebP q88; shown with `quality={90}` (75 bands dark gradients).
+- **Product stills** (Selected Works tiles) are path-traced: `scripts/renders/render.sh <slug>` renders the processed
+  detail GLB in Blender Cycles on a warm light sweep (`--studio-warm`), presets rebuilt as Principled BSDFs with the
+  same procedural detail as `materials.ts`; framing per product in `scripts/renders/<slug>.json`. 2560×1920 WebP q90.
 
 ### 1.5 Other sources
 - **KiCad** (IMU PCB): PCB Editor → *File → Export → glTF/VRML/STEP* (KiCad 7+ supports glTF/GLB export).
@@ -119,7 +134,9 @@ gl.toneMappingExposure = 0.9;               // tune 0.8–1.1
 dpr = [1, 1.75];                             // clamp; PerformanceMonitor lowers it
 shadows = 'soft';                            // or false if only ContactShadows are used
 ```
-- **AgX** (what Oryzo uses): filmic, graceful highlight rolloff, slightly desaturated — great for the moody dark scenes.
+- **Site default since 2026-10-22: Khronos PBR Neutral at exposure 1.0** (`SceneCanvas`). AgX lifted and desaturated
+  the near-black parts (SLS, carbon, black oxide, anodised extrusions) into grey-brown "clay".
+- **AgX** (what Oryzo uses): filmic, graceful highlight rolloff, slightly desaturated — moody, but greys out black parts.
 - **Khronos PBR Neutral** (`NeutralToneMapping`): keeps base colours accurate — use for brand-coloured things
   (TapCarry UI, coloured plastic trinkets) where AgX would wash colours out.
 - Avoid ACES on new scenes (hue shifts on saturated plastics). Badge Factory uses ACES at 0.85 — acceptable but not preferred.
@@ -148,18 +165,31 @@ shadows = 'soft';                            // or false if only ContactShadows 
 
 All `MeshPhysicalMaterial` unless noted. Values are starting points — tune per scene with the `?debug` leva panel.
 
+**Implemented shader layer (2026-10-22)** — one `onBeforeCompile` for every preset (programs differ by `defines`):
+- The GLBs have no UVs, so detail is procedural in **model-root space** (metres → real mm; follows the model as it
+  bobs): `sls_nylon` sintered grain, `carbon_fiber` 2×2 twill (2.5 mm tows; warp/weft differ in roughness, bump
+  under an unperturbed clearcoat), `alu_*` brushed streaks, `pla_*` 0.2 mm layer lines. Bump uses the surface
+  gradient from derivatives; it fades out once a feature is under a pixel (no shimmer). `?debug` → Materials.detail.
+- Baked `_AO` (§1.0 step 5b) multiplies indirect diffuse/clearcoat/sheen + specular occlusion, and 35 % of direct.
+- `Model` creates **its own** material set (`createMaterial`, disposed on unmount) — the root transform is a uniform.
+  `getMaterial` (cached, shared) stays for `<Mat>` meshes.
+
 | Preset | color | metalness | roughness | extras |
 |---|---|---|---|---|
 | `pla_matte` (FDM PLA/PETG) | from model | 0 | 0.55–0.65 | `clearcoat .1, clearcoatRoughness .5`; optional tiling **layer-line normal map** (0.2mm pitch, scale tuned to model) — sells "3D-printed" instantly |
 | `pla_silk` | from model | 0 | 0.35 | `sheen .3`, `clearcoat .3` |
 | `sls_nylon` (steering wheel enclosure/grips) | `#2a2a2a` or white | 0 | 0.85–0.95 | fine grain `bumpMap` / noise normal, `bumpScale .02` |
+| `plastic_black` (steering wheel enclosure/grips, buttons, dials — Ansh 2026-10-22) | `#121212` | 0 | 0.55 | fine grain (SLS detail); lower roughness than nylon so near-black shapes keep their highlights |
+| `pei_black` (3D printer textured PEI build sheet — Ansh 2026-10-22) | `#161616` | 0 | 0.82 | fine grain (SLS detail) |
 | `alu_extrusion_black` (2020 T-slot) | `#151515` | 1 | 0.35–0.45 | slight `anisotropy .3` along extrusion axis |
 | `alu_machined` (CNC standoffs, heat spreader) | `#c8c8c8` | 1 | 0.2–0.3 | `anisotropy .6` + circular/linear brushed normal |
+| `alu_anodized_gold` (steering wheel quick disconnect) | `#c9a04c` | 1 | 0.3 | brushed streaks |
 | `steel_polished` (rods, lead screw) | `#d6d6d6` | 1 | 0.12–0.2 | — |
+| `steel_stainless` (steering wheel centre bolts, 316 locknuts, QD lock nut) | `#b9bbbc` | 1 | 0.22 | — |
 | `steel_black_oxide` (McMaster black-oxide screws) | `#2b2b2d` | 1 | 0.38 | — |
 | `steel_zinc` (zinc-plated hardware) | `#c4c6c2` | 1 | 0.3 | — |
 | `brass` (lead-screw nut, inserts) | `#c9a14a` | 1 | 0.25 | — |
-| `carbon_fiber` (baseplate) | `#111` | 0 | 0.35 base | **twill weave normal + roughness map**, `clearcoat 1, clearcoatRoughness .05`, `anisotropy .5` rotated per weave |
+| `carbon_fiber` (baseplate) | `#333` (site; tow albedo ×0.3 / ×1.7 so the twill reads in dark scenes) | 0 | 0.35 base | **twill weave normal + roughness map**, `clearcoat 1, clearcoatRoughness .05`, `anisotropy .5` rotated per weave |
 | `rubber_silicone` (grips, damper) | from model | 0 | 0.7 | `sheen .5, sheenRoughness .8, sheenColor` slightly lighter |
 | `pcb_soldermask` | `#0d3b1e` / black | 0 | 0.35 | `clearcoat .6`; separate `pcb_gold` (metal 1, rough .25, `#d4a64a`), `pcb_silkscreen` via texture |
 | `polycarbonate_clear` (small windows) | `#dfe7ea` | 0 | 0.04 | `transparent, opacity .28, clearcoat 1, depthWrite false` — no transmission pass |
@@ -233,7 +263,8 @@ Written 2026-10-22 from the three.js manual (disposal, render on demand, optimis
 **Resources & memory**
 10. Load GLBs only via `useGLTF(url, false, true)` (meshopt) → cached per URL. Reuse with `scene.clone(true)`
     (shares geometry + materials). `useGLTF.preload` only for above-the-fold models.
-11. Materials come from `materials.ts` `getMaterial(preset, color)`, which caches instances — never `new
+11. Materials come from `materials.ts`: `<Model>` owns one `createMaterial` set per instance (disposed with it);
+    everything else uses `getMaterial(preset, color)`, which caches instances — never `new
     MeshPhysicalMaterial` per mesh per render. **Attach shared materials with `<Mat preset=… />`** (a
     `<primitive attach="material">`), never `material={getMaterial(…)}`: R3F disposes a mesh's material on unmount,
     which would destroy the cached instance for every other mesh. (`Model` handles this itself.)
@@ -299,6 +330,10 @@ scroll frame (drei View has to re-align), so its per-frame GPU cost competes wit
     Measured landing TBT 1,000 ms → ~350 ms; Lighthouse desktop 71 → 84–85 (run with GPU flags:
     `--chrome-flags="--headless=new --enable-gpu --ignore-gpu-blocklist --use-angle=d3d11"`; Lighthouse's default
     launch scored the same build 73–74).
+
+29. **Shadows are baked, not per frame**: the hero desk lamp is the only shadow-casting light; its
+    `shadow.autoUpdate = false` and `shadow.needsUpdate` is set when a model appears / the layout changes (a 1.4M-triangle
+    depth pass every frame would undo rules 19–23). Models cast onto the mat only; self-occlusion is the baked AO.
 
 **Lazy 3D content**: create `React.lazy` scene components inside a *client* module that renders the `SceneBlock`
 (e.g. `components/landing/HeroScene.tsx`). Passing a lazy export through a Server Component double-wraps it and crashes.

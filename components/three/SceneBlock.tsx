@@ -20,8 +20,8 @@ type Props = {
   children: React.ReactNode;
   poster?: string;
   posterAlt: string;
-  /** "cover" for full-bleed scenes whose poster is a full-frame render. */
-  posterFit?: "contain" | "cover";
+  /** "height" for full-bleed scenes with a fixed vertical-FOV camera (matches the live frame at any aspect). */
+  posterFit?: "contain" | "cover" | "height";
   /** Needs continuous frames while on screen (idle animation, scroll-driven motion). */
   animate?: boolean;
   priority?: boolean;
@@ -51,7 +51,7 @@ export function SceneBlock({ children, poster, posterAlt, posterFit, animate = f
   const active = show3D && inView;
 
   return (
-    <div ref={ref} className={`relative ${className}`}>
+    <div ref={ref} className={`relative overflow-hidden ${className}`}>
       <PosterFallback src={poster} alt={posterAlt} fit={posterFit} visible={!show3D || !ready || contextLost} priority={priority} />
       {show3D && (
         <SceneView active={active} visible={onScreen} animate={animate} onReady={onReady} onError={onError}>

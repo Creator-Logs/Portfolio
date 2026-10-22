@@ -2,7 +2,7 @@
 
 import { PerspectiveCamera } from "@react-three/drei";
 import { useFrame, type ThreeEvent } from "@react-three/fiber";
-import { Suspense, useCallback, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { ContactShadows } from "@/components/three/ContactShadows";
 import { Model } from "@/components/three/Model";
@@ -40,6 +40,7 @@ const lookNow = new THREE.Vector3();
 
 export default function HeroMatScene({ mobile, hovered, onHover, onLabel, onNavigate }: HeroMatProps) {
   const camera = useRef<THREE.PerspectiveCamera>(null);
+  const lamp = useRef<THREE.SpotLight>(null);
   const cam = mobile ? CAMERA.mobile : CAMERA.desktop;
   const [loaded, setLoaded] = useState(1); // stream models one at a time (3D_GUIDE §7b rule 18)
   const push = useRef<{ t0: number; from: THREE.Vector3; to: THREE.Vector3; look: THREE.Vector3; def: TrinketDef } | null>(null);
@@ -62,6 +63,19 @@ export default function HeroMatScene({ mobile, hovered, onHover, onLabel, onNavi
     },
     [mobile, onHover],
   );
+
+  // The lamp's shadow map is baked, not rendered every frame (1.4M triangles): re-bake when a model
+  // appears or the layout changes. A hover-lifted model leaving its shadow on the mat reads as lift.
+  useEffect(() => {
+    const l = lamp.current;
+    if (!l) return;
+    l.shadow.needsUpdate = true;
+    // poster capture: every model is on the mat and the shadow has baked (scripts/posters.sh)
+    if (loaded > trinkets.length) {
+      const id = setTimeout(() => (document.body.dataset.posterReady = "hero"), 1500);
+      return () => clearTimeout(id);
+    }
+  }, [loaded, mobile]);
 
   useFrame(({ invalidate }) => {
     const c = camera.current;
@@ -102,9 +116,31 @@ export default function HeroMatScene({ mobile, hovered, onHover, onLabel, onNavi
         far={20}
         onUpdate={(c) => c.lookAt(cam.target)}
       />
-      <StudioEnvironment preset="dark-studio" />
-      {/* warm desk-lamp key from top-left (landing.md "3D treatment") */}
-      <directionalLight position={[-0.8, 1.4, 0.6]} intensity={1.6} color="#FFD9B0" />
+      <StudioEnvironment preset="dark-studio" intensity={0.5} />
+      {/* warm desk lamp, top-left (landing.md "3D treatment"): a soft pool of light that falls off toward
+          the mat edges, and the only shadow-casting light on the site */}
+      <spotLight
+        ref={lamp}
+        position={[-0.45, 1.2, 0.3]}
+        angle={0.42}
+        penumbra={1}
+        decay={2}
+        intensity={8}
+        color="#FFE6CC"
+        castShadow
+        shadow-autoUpdate={false}
+        shadow-mapSize={[2048, 2048]}
+        shadow-radius={6}
+        shadow-bias={-0.0002}
+        shadow-normalBias={0.0015}
+        shadow-camera-near={0.4}
+        shadow-camera-far={2.5}
+      >
+        {/* aimed at (0.06, 0, -0.02) on the mat; local to the light */}
+        <object3D attach="target" position={[0.51, -1.2, -0.32]} />
+      </spotLight>
+      {/* cool back rim: separates the dark models from the desk (no shadow) */}
+      <directionalLight position={[0.8, 0.5, -1]} intensity={1.6} color="#DCE4F2" />
 
       <CuttingMat />
       {trinkets.slice(0, loaded).map((def, i) => (

@@ -1,0 +1,8 @@
+{
+  "_doc": "See steering-wheel.json.",
+  "view": [-0.7, -1, 0.55],
+  "yaw_deg": 0,
+  "lens": 70,
+  "fill": 1.1,
+  "fstop": 14
+}

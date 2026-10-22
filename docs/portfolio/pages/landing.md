@@ -167,8 +167,16 @@ Phase 6 (pinned showcase, 2026-10-22):
 Phase 8 (selected works, 2026-10-22):
 - Rows from `content/projects.ts`; media = still poster (rendered from /dev/models view 0 → public/project_media/<slug>/poster.webp;
   TapCarry uses its hero screenshot); desktop hover-intent (250 ms rest, no scroll) mounts the live spinning model.
+  (Superseded by the visuals pass below: Cycles product renders, no live 3D.)
 - Gimbal + Garage have no media yet ("Media coming soon" tiles) — ask Ansh in those project sessions.
 - Known, for Phase 11: ~2 s main-thread freeze during first load while the 9 MB printer mat GLB uploads.
+Visuals pass (2026-10-22, Ansh: "lighting and shading look amateur… just colours assigned"):
+- Hero + showcase: baked per-vertex AO, procedural material detail (carbon twill, SLS grain, brushed alu, layer
+  lines), PBR Neutral tone mapping, gradient softbox env, hero lit by a warm desk lamp with a baked soft shadow.
+- Selected works: **light studio sweep Cycles renders** (Ansh's pick) replace the dark posters and the live spinning
+  model; **hover = the slow 1.03 zoom only** (Ansh's pick), no 3D in the list.
+- Posters re-captured @2×/@3× from the live scenes (`scripts/posters.sh`); showcase poster = wheel face-on (progress 0.5).
+- Intro card: Ansh's photo (`ansh-gupta.png`, cropped 4:5 → `public/ansh-gupta.webp`).
 Phase 9 (bench, 2026-10-22): `content/skills.ts`; "Used in" links only where the resume ties a skill to a project
 (TypeScript/SQL have none; Raspberry Pi/CAN note the out-of-scope Illini EV telemetry; DFM/injection molding = coursework).
 - Note for the printer session: the v1 printer page overflows horizontally at 375px (see `reference/printer-v1-mobile.png`).

@@ -7,6 +7,7 @@ Run:  blender -b --factory-startup -P scripts/models/process.py -- <config.json>
 3. remove only parts that are invisible from every direction (ID-render visibility test),
 4. assign preset-named materials ("preset#hex") from the config,
 5. join meshes per material (draw calls ~ number of materials) - geometry is never simplified,
+   then bake Cycles ambient occlusion into a per-vertex "_AO" attribute,
 6. export an uncompressed GLB (compression happens next, in optimize.mjs).
 """
 import json
@@ -47,6 +48,14 @@ bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=raw_path, merge_vertices=False)
 meshes = [o for o in bpy.context.scene.objects if o.type == "MESH"]
 log(f"imported {len(meshes)} mesh objects, {sum(len(o.data.polygons) for o in meshes):,} polys")
+
+# -- 1a. excluded parts ("exclude": [regex], full part names) - stray CAD instances only -------
+for pattern in cfg.get("exclude", []):
+    rx = re.compile(pattern, re.I)
+    for o in [o for o in meshes if rx.search(o.name)]:
+        log(f"exclude {pattern!r}: {o.name}")
+        bpy.data.objects.remove(o)
+    meshes = [o for o in bpy.context.scene.objects if o.type == "MESH"]
 
 # -- 1b. exploded parts ("explode": [[regex, [dx, dy, dz]]], mm in STEP coordinates) -----
 # Applied before culling, so whatever a moved part uncovers is kept. glTF import maps
@@ -276,6 +285,93 @@ log(f"output: {len(final)} meshes (one per material), {sum(len(o.data.polygons) 
 for o in final:
     log(f"   {o.name:28s} {len(o.data.polygons):>9,} polys")
 
+
+# -- 5b. ambient occlusion -> per-vertex "_AO" attribute ----------------------------------
+# Cycles AO bake (every part occludes every other) into a point colour attribute, copied to a
+# single-channel float attribute that the glTF exporter writes as the custom "_AO" vertex attribute;
+# materials.ts applies it to indirect light (+ a little direct) with specular occlusion.
+# CAD tessellations are sparse: flat faces are fans of long triangles from hole rims to the border,
+# so per-vertex AO would smear rim darkness across whole faces. Edges longer than the AO resolution
+# are split first. New vertices lie *on* existing edges and faces are re-triangulated in their own
+# plane, so the shape is exactly unchanged (nothing is simplified; 3D_GUIDE §1.0 fidelity rules).
+import bmesh  # noqa: E402
+
+
+def densify(o, max_len):
+    mesh = o.data
+    cn = np.empty(len(mesh.loops) * 3, dtype=np.float32)
+    mesh.corner_normals.foreach_get("vector", cn)  # the exact CAD normals (stored encoded otherwise)
+    attr = mesh.attributes.new("cn_tmp", "FLOAT_VECTOR", "CORNER")
+    attr.data.foreach_set("vector", cn)
+    before = len(mesh.vertices)
+    bm = bmesh.new()
+    bm.from_mesh(mesh)
+    for _ in range(4):  # re-triangulation can leave new long diagonals: repeat until none
+        long = {}
+        for e in bm.edges:
+            n = math.ceil(e.calc_length() / max_len) - 1
+            if n > 0:
+                long.setdefault(min(n, 64), []).append(e)
+        if not long:
+            break
+        for cuts, edges in long.items():  # same length -> same cuts on both copies of a seam edge: no cracks
+            bmesh.ops.subdivide_edges(bm, edges=edges, cuts=cuts, use_grid_fill=False)
+        bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 3])
+    bm.to_mesh(mesh)
+    bm.free()
+    cn = np.empty(len(mesh.loops) * 3, dtype=np.float32)
+    mesh.attributes["cn_tmp"].data.foreach_get("vector", cn)
+    cn = cn.reshape(-1, 3)
+    cn /= np.maximum(np.linalg.norm(cn, axis=1, keepdims=True), 1e-12)
+    mesh.attributes.remove(mesh.attributes["cn_tmp"])
+    mesh.normals_split_custom_set(cn.tolist())
+    return before, len(mesh.vertices)
+
+
+def bake_ao(objs, samples, distance):
+    scene = bpy.context.scene
+    scene.render.engine = "CYCLES"
+    scene.cycles.samples = samples
+    scene.cycles.use_denoising = False
+    scene.world = scene.world or bpy.data.worlds.new("w")
+    scene.world.light_settings.distance = distance
+    scene.render.bake.target = "VERTEX_COLORS"
+    see_through = re.compile(cfg["transparent"], re.I) if cfg.get("transparent") else None
+    targets = []
+    for o in objs:
+        if see_through and any(see_through.search(m.name) for m in o.data.materials if m):
+            o.visible_diffuse = o.visible_glossy = o.visible_shadow = False  # windows don't occlude
+            continue
+        attr = o.data.color_attributes.new("ao_bake", "BYTE_COLOR", "POINT")
+        o.data.color_attributes.active_color = attr
+        targets.append(o)
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in targets:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = targets[0]
+    bpy.ops.object.bake(type="AO", target="VERTEX_COLORS", use_clear=True)
+    for o in targets:
+        src = o.data.color_attributes["ao_bake"]
+        rgba = np.empty(len(src.data) * 4, dtype=np.float32)
+        src.data.foreach_get("color", rgba)  # linear
+        ao = rgba.reshape(-1, 4)[:, 0].copy()
+        o.data.color_attributes.remove(src)
+        o.data.attributes.new("_AO", "FLOAT", "POINT").data.foreach_set("value", ao)
+        log(f"   AO {o.name:28s} mean {ao.mean():.3f}")
+
+
+if cfg.get("ao", True):
+    lo, hi = bounds(final)
+    diag_mm = (hi - lo).length * 1000
+    res = cfg.get("ao_resolution_mm", diag_mm * 0.012) / 1000
+    dist = cfg.get("ao_distance_mm", diag_mm * 0.08) / 1000
+    for o in final:
+        a, b = densify(o, res)
+        if b > a:
+            log(f"   split edges > {res * 1000:.1f} mm: {o.name:28s} {a:,} -> {b:,} verts")
+    log(f"baking AO: {cfg.get('ao_samples', 128)} samples, distance {dist * 1000:.1f} mm")
+    bake_ao(final, cfg.get("ao_samples", 128), dist)
+
 # -- 6. export -------------------------------------------------------------------
 os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
 bpy.ops.export_scene.gltf(
@@ -285,6 +381,8 @@ bpy.ops.export_scene.gltf(
     export_normals=True,
     export_texcoords=False,
     export_materials="EXPORT",
+    export_attributes=True,  # "_AO"
+    export_vertex_color="NONE",
     export_yup=True,
     export_cameras=False,
     export_lights=False,

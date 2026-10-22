@@ -95,6 +95,38 @@ function drawMat(monoFamily: string) {
   return canvas;
 }
 
+// Tiling grain for the PVC surface (roughness + bump): two octaves of value noise, 256², ~2 mm cells.
+function drawGrain() {
+  const n = 256;
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = n;
+  const ctx = canvas.getContext("2d")!;
+  const img = ctx.createImageData(n, n);
+  const lattice = (k: number) => {
+    const g = Array.from({ length: k * k }, () => Math.random());
+    return (x: number, y: number) => {
+      const fx = (x / n) * k, fy = (y / n) * k;
+      const x0 = Math.floor(fx), y0 = Math.floor(fy);
+      const tx = fx - x0, ty = fy - y0;
+      const sx = tx * tx * (3 - 2 * tx), sy = ty * ty * (3 - 2 * ty);
+      const at = (i: number, j: number) => g[(j % k) * k + (i % k)];
+      const a = at(x0, y0) + (at(x0 + 1, y0) - at(x0, y0)) * sx;
+      const b = at(x0, y0 + 1) + (at(x0 + 1, y0 + 1) - at(x0, y0 + 1)) * sx;
+      return a + (b - a) * sy;
+    };
+  };
+  const coarse = lattice(16), fine = lattice(64);
+  for (let y = 0; y < n; y++)
+    for (let x = 0; x < n; x++) {
+      const v = 0.45 * coarse(x, y) + 0.4 * fine(x, y) + 0.15 * Math.random();
+      const i = (y * n + x) * 4;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = Math.round((0.72 + 0.26 * v) * 255); // = roughness 0.72..0.98
+      img.data[i + 3] = 255;
+    }
+  ctx.putImageData(img, 0, 0);
+  return canvas;
+}
+
 export function CuttingMat() {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
@@ -118,25 +150,42 @@ export function CuttingMat() {
     tex.anisotropy = Math.min(4, gl.capabilities.getMaxAnisotropy()); // 16x over a full-screen mat is a big fill cost on iGPUs
     return tex;
   }, [gl]);
+  const grain = useMemo(() => {
+    const tex = new THREE.CanvasTexture(drawGrain()); // linear data (roughness / bump)
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(MAT_W / 0.5, MAT_D / 0.5); // one tile per 50 cm
+    return tex;
+  }, []);
   // created imperatively -> disposed here (3D_GUIDE §7b rule 12)
   useEffect(() => () => texture.dispose(), [texture]);
+  useEffect(() => () => grain.dispose(), [grain]);
 
   return (
     <group ref={group} visible={warm}>
       {/* mat: 3 mm thick slab so the edge catches light */}
-      <mesh position={[0, -0.0015, 0]}>
+      <mesh position={[0, -0.0015, 0]} receiveShadow>
         <boxGeometry args={[MAT_W, 0.003, MAT_D]} />
         <meshStandardMaterial attach="material-0" color="#2f3a22" roughness={0.9} />
         <meshStandardMaterial attach="material-1" color="#2f3a22" roughness={0.9} />
-        <meshStandardMaterial attach="material-2" map={texture} roughness={0.88} metalness={0} />
+        {/* top: matte PVC with a fine grain that breaks up the lamp's sheen */}
+        <meshStandardMaterial
+          attach="material-2"
+          map={texture}
+          roughness={1}
+          roughnessMap={grain}
+          bumpMap={grain}
+          bumpScale={1}
+          metalness={0}
+          envMapIntensity={0.7}
+        />
         <meshStandardMaterial attach="material-3" color="#2f3a22" roughness={0.9} />
         <meshStandardMaterial attach="material-4" color="#2f3a22" roughness={0.9} />
         <meshStandardMaterial attach="material-5" color="#2f3a22" roughness={0.9} />
       </mesh>
-      {/* the desk under it: warm near-black */}
-      <mesh rotation-x={-Math.PI / 2} position={[0, -0.0031, 0]}>
+      {/* the desk under it: warm near-black, lit mostly by the lamp pool so it falls off to --ink */}
+      <mesh rotation-x={-Math.PI / 2} position={[0, -0.0031, 0]} receiveShadow>
         <planeGeometry args={[8, 8]} />
-        <meshStandardMaterial color="#1A120C" roughness={0.75} />
+        <meshStandardMaterial color="#120C08" roughness={0.65} envMapIntensity={0.15} />
       </mesh>
     </group>
   );

@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // 90 for posters/renders: 75 bands the dark gradients and smears fine CAD detail.
+  images: { qualities: [75, 90] },
   async redirects() {
     return [
       // v1 URL may already be shared.

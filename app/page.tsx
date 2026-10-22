@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { PillButton } from "@/components/ui/PillButton";
 import { site } from "@/content/site";
 import { HeroScene } from "@/components/landing/HeroScene";
@@ -22,13 +23,15 @@ export default function Home() {
           </div>
           <div className="flex items-end justify-between gap-6">
             <div className="glass pointer-events-auto flex max-w-md items-center gap-4 rounded-xl bg-ink/60 p-4">
-              {/* Portrait slot — swap for next/image once Ansh provides the photo. */}
-              <div
-                role="img"
-                aria-label={`Photo of ${site.name} (placeholder)`}
-                className="type-label grid aspect-[4/5] w-16 shrink-0 place-items-center rounded-lg border border-dashed border-grey-brown text-grey-brown md:w-24"
-              >
-                Photo
+              <div className="relative aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-lg border border-brown md:w-24">
+                <Image
+                  src="/ansh-gupta.webp"
+                  alt={`${site.name} smiling on a boat at Lake Como`}
+                  fill
+                  priority
+                  sizes="96px"
+                  className="object-cover"
+                />
               </div>
               <div>
                 <p className="type-label text-orange">{site.location}</p>

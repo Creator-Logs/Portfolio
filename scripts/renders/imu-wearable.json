@@ -1,0 +1,8 @@
+{
+  "_doc": "See steering-wheel.json. The top cap is lifted off (explode in scripts/models/imu-wearable.json) so the PCB shows.",
+  "view": [-0.8, -1, 0.6],
+  "yaw_deg": 0,
+  "lens": 100,
+  "fill": 1.08,
+  "fstop": 16
+}

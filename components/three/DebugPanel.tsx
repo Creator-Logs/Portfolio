@@ -4,6 +4,7 @@ import { invalidate } from "@react-three/fiber";
 import { useControls } from "leva";
 import { useEffect, useState } from "react";
 import type * as THREE from "three";
+import { shaderTuning } from "./materials";
 import { tuning } from "./store";
 
 // ?debug only: live tuning (leva) + renderer.info overlay to verify 3D_GUIDE §7b rules 10–13.
@@ -21,6 +22,11 @@ export default function DebugPanel({ gl }: { gl: THREE.WebGLRenderer }) {
       },
     },
   });
+  useControls("Materials", {
+    detail: { value: shaderTuning.uDetail.value, min: 0, max: 3, step: 0.05, onChange: (v: number) => set(shaderTuning.uDetail, v) },
+    ao: { value: shaderTuning.uAO.value, min: 0, max: 1, step: 0.05, onChange: (v: number) => set(shaderTuning.uAO, v) },
+    aoDirect: { value: shaderTuning.uAODirect.value, min: 0, max: 1, step: 0.05, onChange: (v: number) => set(shaderTuning.uAODirect, v) },
+  });
 
   const [info, setInfo] = useState(snapshot(gl));
   useEffect(() => {
@@ -35,6 +41,11 @@ export default function DebugPanel({ gl }: { gl: THREE.WebGLRenderer }) {
         .join("\n")}
     </pre>
   );
+}
+
+function set(uniform: { value: number }, v: number) {
+  uniform.value = v;
+  invalidate();
 }
 
 function snapshot(gl: THREE.WebGLRenderer) {

@@ -19,6 +19,7 @@
   --color-studio-3: #f5f5f7;
   --color-studio-ink: #1d1d1f;
   --color-studio-muted: #86868b;
+  --color-studio-warm: #e6e0d7; /* product-render sweep (Selected Works tiles) */
 
   --font-display: var(--font-cabinet), "Arial Narrow", sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -159,4 +160,16 @@
 .qa .grain,
 .qa nextjs-portal {
   display: none;
+}
+
+/* Poster capture (?poster, scripts/posters.sh): only the 3D canvas, so the still matches the live frame
+   underneath the page's own type. visibility keeps the layout the drei Views track. */
+.poster header,
+.poster .grain,
+.poster footer,
+.poster nextjs-portal {
+  display: none;
+}
+.poster [data-page] * {
+  visibility: hidden;
 }

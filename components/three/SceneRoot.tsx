@@ -13,10 +13,10 @@ export function SceneRoot() {
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    threeStore.set({
-      webgl: detectWebGL() ? "ok" : "none",
-      debug: new URLSearchParams(window.location.search).has("debug"),
-    });
+    const params = new URLSearchParams(window.location.search);
+    const poster = params.has("poster") ? params.get("poster") || "hero" : null;
+    if (poster) document.documentElement.classList.add("poster");
+    threeStore.set({ webgl: detectWebGL() ? "ok" : "none", debug: params.has("debug"), poster });
   }, []);
 
   // Reduced motion: every block shows its poster, so skip the renderer entirely.

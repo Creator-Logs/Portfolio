@@ -52,7 +52,9 @@ export function HeroScene({ className }: { className?: string }) {
         animate
         priority
         poster={mobile ? "/project_media/landing/hero-mobile.webp" : "/project_media/landing/hero.webp"}
-        posterFit="cover"
+        // desktop windows vary widely in aspect: scale by height like the camera; phones are all close to the
+        // capture aspect, where cover (<= ~5% enlargement) beats side bars
+        posterFit={mobile ? "cover" : "height"}
         posterAlt="Ansh's projects laid out on a green cutting mat: the TapCarry monitor, the 3D printer, the steering wheel and the IMU wearable"
         className="h-full w-full"
       >

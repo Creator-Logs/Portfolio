@@ -52,7 +52,10 @@ export function Trinket(props: Props) {
     const s = scaler.current!;
     const content = inner.current!;
     content.traverse((o) => {
-      if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).raycast = () => {};
+      if (!(o as THREE.Mesh).isMesh) return;
+      (o as THREE.Mesh).raycast = () => {};
+      // onto the mat only (self-occlusion comes from the baked AO); clear windows cast none
+      o.castShadow = !((o as THREE.Mesh).material as THREE.Material).transparent;
     });
     s.rotation.set(...(rotation.map(THREE.MathUtils.degToRad) as [number, number, number]), "XYZ");
     s.scale.setScalar(1);
