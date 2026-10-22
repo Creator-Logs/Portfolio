@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import { DM_Mono, Inter } from "next/font/google";
 import { Nav } from "@/components/ui/Nav";
 import { Grain } from "@/components/ui/Grain";
+import { SmoothScroll } from "@/components/ui/SmoothScroll";
+import { SceneRoot } from "@/components/three/SceneRoot";
 import "./globals.css";
 
 const cabinet = localFont({
@@ -33,8 +35,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${cabinet.variable} ${inter.variable} ${dmMono.variable}`}>
       {/* Browser extensions (e.g. ColorZilla) inject attributes on <body>. */}
       <body suppressHydrationWarning>
+        <SceneRoot />
+        <SmoothScroll />
         <Nav />
-        {children}
+        {/* Above the fixed canvas; 3D shows through transparent View boxes. */}
+        <div className="relative z-[1]">{children}</div>
         <Grain />
       </body>
     </html>

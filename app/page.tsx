@@ -3,6 +3,7 @@ import { SpecLine } from "@/components/ui/SpecLine";
 import { PillButton } from "@/components/ui/PillButton";
 import { site } from "@/content/site";
 import { projects } from "@/content/projects";
+import { HeroScene } from "@/components/landing/HeroScene";
 
 // Phase 1 shell: every landing section exists with its anchor and final typography,
 // and gets its real content/3D in the phase noted in each placeholder.
@@ -17,6 +18,7 @@ export default function Home() {
   return (
     <main>
       <section id="intro" className="px-page relative flex min-h-svh flex-col justify-between pb-10 pt-28 md:pt-32">
+        <HeroScene className="!absolute inset-x-0 bottom-0 top-[40%] md:inset-y-0 md:left-[40%] md:right-0" />
         <div>
           <p className="type-label max-w-[46ch] text-grey-brown">{site.tagline}</p>
           <h1 className="type-h1 mt-4">

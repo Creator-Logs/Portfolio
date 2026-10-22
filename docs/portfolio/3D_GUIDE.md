@@ -155,6 +155,67 @@ Techniques: `PerformanceMonitor` → step DPR/AO/bloom down; `frameloop="demand"
 `useGLTF.preload` only for above-the-fold; lazy-load section scenes with IntersectionObserver; `<Bvh>` for raycast-heavy
 scenes; dispose on route change; KTX2 for big textures; test on a mid-range Android and an iPhone.
 
+## 7b. Runtime rules (so the site never crashes or stutters)
+
+Written 2026-10-22 from the three.js manual (disposal, render on demand, optimise lots of objects), R3F
+"Performance pitfalls" + "Scaling performance", drei `View` source, and Next 16 lazy-loading docs. **Every session follows these.**
+
+**Renderer & context**
+1. **One renderer, one WebGL context:** `SceneRoot` (in `app/layout.tsx`) owns the only `<Canvas>`; sections use
+   `SceneBlock` → drei `<View>`. Never add another `<Canvas>`. The canvas persists across routes (no re-init cost).
+2. `SceneRoot` is loaded with `next/dynamic({ ssr: false })` from a client component, so three.js never blocks first
+   paint; the LCP element is always text or a poster.
+3. **Context loss is a normal path:** `SceneRoot` listens for `webglcontextlost` (calls `preventDefault()` so the
+   browser may restore) and `webglcontextrestored`; while lost, every `SceneBlock` shows its poster. No WebGL support →
+   the canvas is never mounted and posters show.
+4. Every 3D block is wrapped in an error boundary + `<Suspense>`; on a load/render error the block falls back to its poster.
+
+**Frame loop**
+5. `frameloop="demand"`. Nothing renders unless something calls `invalidate()`.
+6. drei `View` measures its DOM rect *inside the frame loop*, so `SceneRoot` calls `invalidate()` on `scroll` and
+   `resize`. Views already skip rendering when offscreen (drei checks the rect).
+7. Continuous animation (idle bob, scroll rotation) uses `<FrameDriver active={inView && !reducedMotion}/>`, which
+   invalidates each frame only while its block is on screen (IntersectionObserver). Hidden tab → rAF stops by itself.
+8. In `useFrame`: **no allocations** (reuse module/ref-scoped `Vector3`/`Quaternion`), **no `setState`**, mutate refs,
+   use `delta` for frame-rate independence. No `setState` in `onPointerMove` either.
+9. Toggle `visible` rather than mounting/unmounting meshes (mounting recompiles shaders).
+
+**Resources & memory**
+10. Load GLBs only via `useGLTF(url, false, true)` (meshopt) → cached per URL. Reuse with `scene.clone(true)`
+    (shares geometry + materials). `useGLTF.preload` only for above-the-fold models.
+11. Materials come from `materials.ts` `getMaterial(preset, color)`, which caches instances — never `new
+    MeshPhysicalMaterial` per mesh per render. **Attach shared materials with `<Mat preset=… />`** (a
+    `<primitive attach="material">`), never `material={getMaterial(…)}`: R3F disposes a mesh's material on unmount,
+    which would destroy the cached instance for every other mesh. (`Model` handles this itself.)
+12. R3F auto-disposes JSX-created objects on unmount, **but not** `<primitive>` objects or the `useGLTF` cache. Cached
+    GLBs stay resident on purpose (fast back-navigation); `renderer.info.memory` must stay **flat** across repeated
+    navigation, not necessarily drop. Anything created imperatively (render targets, textures from canvas,
+    `ImageBitmap`) must be disposed / `.close()`d in the effect cleanup. `material.dispose()` does not dispose its textures.
+13. Merge static meshes that share a material (fewer draw calls); `InstancedMesh` for identical repeats (fasteners)
+    only when visually identical. Target ≤ ~150 draw calls per view.
+
+**Interaction**
+14. Model meshes have raycasting disabled (`Model raycastable={false}` default); interaction goes through an invisible
+    **hit proxy** (box/hull from the bounding box). Detailed models stay detailed and hover stays O(1).
+
+**Quality scaling** (never by reducing model detail)
+15. `PerformanceMonitor` steps DPR within `[1, 1.75]` (mobile cap 1.5) and is the only thing that lowers quality;
+    later it may also drop post-FX and shadow resolution. Model geometry is never simplified at runtime.
+16. Use **our** `StudioEnvironment` (bakes each preset once into a shared PMREM texture for the app's lifetime) and
+    **our** `ContactShadows` (bakes once by default, disposes its render targets). Don't use drei's `<Environment>` or
+    `<ContactShadows>`: measured with `?debug`, they leak 1 and 2 textures per mount respectively.
+17. Post-processing (if any) must work with Views — decide per scene; not used in the foundation.
+18. Mobile: stream models one at a time (sequential `Suspense`), DPR cap 1.5.
+
+**Lazy 3D content**: create `React.lazy` scene components inside a *client* module that renders the `SceneBlock`
+(e.g. `components/landing/HeroScene.tsx`). Passing a lazy export through a Server Component double-wraps it and crashes.
+
+**Verified 2026-10-22 (Phase 2):** 6 landing ↔ project round trips → `geometries/textures/programs` flat at 4/4/7;
+frame counter stops when the block is offscreen; hover via hit proxy works; render error → poster fallback works.
+
+**Debug**: `?debug` shows a leva panel (exposure, env intensity, DPR) and a live `renderer.info` overlay
+(frame counter, calls, triangles, geometries, textures, programs, DPR). Use it to verify rules 10–13 on every page.
+
 ## 8. Checklist before a model ships
 - [ ] Bevels/normals fixed, no shading streaks under a moving light
 - [ ] Materials mapped to presets, colours accurate under the chosen tone mapper
