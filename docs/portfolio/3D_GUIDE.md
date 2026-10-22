@@ -269,6 +269,8 @@ scroll frame (drei View has to re-align), so its per-frame GPU cost competes wit
 21. Keep `MeshPhysicalMaterial` extras (clearcoat/sheen/anisotropy) at 0 unless they visibly matter.
 22. How to test: `scripts`-style Playwright run in **headed** Chrome (`headless: false`) with `mouse.wheel`, at
     deviceScaleFactor 1, 1.5 and 2; count rAF gaps > 150 ms. Headless shows ~2 s artefact gaps even when headed is clean.
+    GPU timings drift with machine heat (same commit measured p95 8.4 ms early in a session, 20.8 ms hours later):
+    when judging a regression, re-measure a baseline commit in the same sitting before blaming code.
 
 23. **A View draws only when strictly on screen** (`SceneBlock` passes `visible` from an IntersectionObserver with
     ratio > 0). drei's own check treats an element touching the viewport edge as visible — measured: the pinned
@@ -286,6 +288,17 @@ scroll frame (drei View has to re-align), so its per-frame GPU cost competes wit
 27. **Hover-mounted 3D needs hover intent** (rest ≥ 250 ms, no scroll in the last 200 ms): content scrolling under a
     resting cursor fires mouseenter. And give such scenes the **same light rig** as an earlier scene so their
     shader programs are already compiled (light count is part of the program key). Measured: 742 ms -> 0 stalls.
+
+28. **Never draw a new shader before it's compiled** (load-time TBT): on ANGLE/D3D the first draw with a program
+    blocks the main thread until compile+link finish (`WebGLProgram` first-use → `getUniforms`). So:
+    objects stay `visible={false}` until `gl.compileAsync(object, camera, scene)` resolves (Trinket, CuttingMat);
+    private passes (ContactShadows depth/blur) are compiled with **their render target bound** — render targets
+    use a different variant (no tone mapping), and so would a warm-up render into one (useWarmup draws one
+    scissored canvas pixel instead); `renderer.debug.checkShaderErrors = false` in production.
+    Known limit: `PMREMGenerator`'s GGX blur (~320 ms, once per visit) has no pre-compile hook.
+    Measured landing TBT 1,000 ms → ~350 ms; Lighthouse desktop 71 → 84–85 (run with GPU flags:
+    `--chrome-flags="--headless=new --enable-gpu --ignore-gpu-blocklist --use-angle=d3d11"`; Lighthouse's default
+    launch scored the same build 73–74).
 
 **Lazy 3D content**: create `React.lazy` scene components inside a *client* module that renders the `SceneBlock`
 (e.g. `components/landing/HeroScene.tsx`). Passing a lazy export through a Server Component double-wraps it and crashes.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useFrame, type ThreeEvent } from "@react-three/fiber";
+import { useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import { useLayoutEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { HitProxy } from "./HitProxy";
@@ -40,6 +40,12 @@ export function Trinket(props: Props) {
   const rim = useRef<ReturnType<typeof attachRim> | null>(null);
   const [box, setBox] = useState<{ size: [number, number, number]; centre: [number, number, number]; top: number } | null>(null);
   const { active } = useSceneBlock();
+  // Stay invisible until this trinket's shaders are compiled in parallel (compileAsync): drawing first
+  // makes the browser wait synchronously for ANGLE/D3D compiles — measured 1.1 s blocked at load.
+  const [warm, setWarm] = useState(false);
+  const gl = useThree((st) => st.gl);
+  const scene = useThree((st) => st.scene);
+  const camera = useThree((st) => st.camera);
 
   // Normalise once the content has loaded (this component only mounts after its Suspense resolves).
   useLayoutEffect(() => {
@@ -63,8 +69,18 @@ export function Trinket(props: Props) {
     s.position.set(-((bounds.min.x + bounds.max.x) / 2) * k, -bounds.min.y * k, -((bounds.min.z + bounds.max.z) / 2) * k);
     setBox({ size: [dims.x * k, dims.y * k, dims.z * k], centre: [0, (dims.y * k) / 2, 0], top: dims.y * k });
     rim.current = attachRim(content);
-    onLoaded?.();
-    return () => rim.current?.dispose();
+    let cancelled = false;
+    gl.compileAsync(outer.current!, camera, scene)
+      .catch(() => {})
+      .then(() => {
+        if (cancelled) return;
+        setWarm(true);
+        onLoaded?.(); // the next model starts loading only once this one is ready to draw
+      });
+    return () => {
+      cancelled = true;
+      rim.current?.dispose();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -92,7 +108,7 @@ export function Trinket(props: Props) {
   });
 
   return (
-    <group ref={outer} position={[position[0], 0, position[1]]}>
+    <group ref={outer} position={[position[0], 0, position[1]]} visible={warm}>
       <group ref={scaler}>
         <group ref={inner}>{children}</group>
       </group>

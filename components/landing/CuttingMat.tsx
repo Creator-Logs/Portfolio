@@ -1,7 +1,7 @@
 "use client";
 
 import { useThree } from "@react-three/fiber";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 // Green self-healing cutting mat (landing.md §1, DESIGN --olive / --olive-2), drawn procedurally:
@@ -97,6 +97,20 @@ function drawMat(monoFamily: string) {
 
 export function CuttingMat() {
   const gl = useThree((s) => s.gl);
+  const scene = useThree((s) => s.scene);
+  const camera = useThree((s) => s.camera);
+  const group = useRef<THREE.Group>(null);
+  // shown once its shaders are compiled in parallel — no synchronous compile stall on the first frame
+  const [warm, setWarm] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    gl.compileAsync(group.current!, camera, scene)
+      .catch(() => {})
+      .then(() => !cancelled && setWarm(true));
+    return () => {
+      cancelled = true;
+    };
+  }, [gl, scene, camera]);
   const texture = useMemo(() => {
     const mono = getComputedStyle(document.documentElement).getPropertyValue("--font-dm-mono").trim() || "monospace";
     const tex = new THREE.CanvasTexture(drawMat(mono));
@@ -108,7 +122,7 @@ export function CuttingMat() {
   useEffect(() => () => texture.dispose(), [texture]);
 
   return (
-    <group>
+    <group ref={group} visible={warm}>
       {/* mat: 3 mm thick slab so the edge catches light */}
       <mesh position={[0, -0.0015, 0]}>
         <boxGeometry args={[MAT_W, 0.003, MAT_D]} />

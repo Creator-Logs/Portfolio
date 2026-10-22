@@ -20,6 +20,8 @@ type Props = {
   children: React.ReactNode;
   poster?: string;
   posterAlt: string;
+  /** "cover" for full-bleed scenes whose poster is a full-frame render. */
+  posterFit?: "contain" | "cover";
   /** Needs continuous frames while on screen (idle animation, scroll-driven motion). */
   animate?: boolean;
   priority?: boolean;
@@ -29,7 +31,7 @@ type Props = {
   loadMargin?: string;
 };
 
-export function SceneBlock({ children, poster, posterAlt, animate = false, priority, className = "", loadMargin }: Props) {
+export function SceneBlock({ children, poster, posterAlt, posterFit, animate = false, priority, className = "", loadMargin }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref);
   const reducedMotion = useReducedMotion();
@@ -50,7 +52,7 @@ export function SceneBlock({ children, poster, posterAlt, animate = false, prior
 
   return (
     <div ref={ref} className={`relative ${className}`}>
-      <PosterFallback src={poster} alt={posterAlt} visible={!show3D || !ready || contextLost} priority={priority} />
+      <PosterFallback src={poster} alt={posterAlt} fit={posterFit} visible={!show3D || !ready || contextLost} priority={priority} />
       {show3D && (
         <SceneView active={active} visible={onScreen} animate={animate} onReady={onReady} onError={onError}>
           {children}

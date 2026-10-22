@@ -56,8 +56,8 @@ between those sessions.
 
 | Page | Status | Notes |
 |---|---|---|
-| Foundation (in landing session) | ◐ in progress | Phase 1 (stack/tokens/nav) ✅, Phase 2 (3D layer + runtime rules) ✅ — see landing.md phases |
-| Landing | ◐ in progress | Phases 1–4, 6, 8 done (5 blueprint intro + 7 TapCarry section cut by Ansh). Next: 9 bench/skills |
+| Foundation (in landing session) | ✅ done | Stack, tokens, shared 3D layer, runtime rules (3D_GUIDE §7b), STEP→GLB pipeline (§1.0) |
+| Landing | ✅ done | Hero mat, steering-wheel showcase, selected works, bench, contact. Cut by Ansh: blueprint intro, TapCarry section, experience. |
 | 3D Printer | ☐ not started | |
 | FSAE Steering Wheel | ☐ not started | |
 | IMU Jump-Height Wearable | ☐ not started | |

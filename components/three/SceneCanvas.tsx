@@ -25,6 +25,8 @@ export default function SceneCanvas() {
     renderer.toneMapping = THREE.AgXToneMapping;
     renderer.toneMappingExposure = tuning.exposure;
     renderer.info.autoReset = false; // reset once per frame in InfoReset so all Views are counted
+    // Shader error checks query link status synchronously on first use of every program; skip in prod.
+    renderer.debug.checkShaderErrors = process.env.NODE_ENV !== "production";
 
     const canvas = renderer.domElement;
     canvas.addEventListener("webglcontextlost", (e) => {

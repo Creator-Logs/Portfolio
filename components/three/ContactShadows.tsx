@@ -38,6 +38,8 @@ export function ContactShadows({
   const scene = useThree((s) => s.scene);
   const gl = useThree((s) => s.gl);
   const count = useRef(0);
+  const compiled = useRef(false);
+  const invalidate = useThree((s) => s.invalidate);
 
   const r = useMemo(() => {
     const target = new THREE.WebGLRenderTarget(resolution, resolution);
@@ -62,7 +64,28 @@ export function ContactShadows({
 
   useEffect(() => {
     count.current = 0; // re-bake when inputs change
+    // Pre-compile the private bake materials (depth override + both blur passes) in parallel before the
+    // first bake — otherwise their first use blocks the main thread on ANGLE/D3D (3D_GUIDE §7b).
+    compiled.current = false;
+    let cancelled = false;
+    // The bake passes draw into a render target, where three builds a different program variant (no tone
+    // mapping) — so compile them with the target bound; the on-screen display material without it.
+    const cam = shadowCamera.current ?? new THREE.OrthographicCamera();
+    const bakeScene = new THREE.Scene();
+    for (const m of [r.depth, r.hBlur, r.vBlur]) bakeScene.add(new THREE.Mesh(r.plane, m));
+    const screenScene = new THREE.Scene().add(new THREE.Mesh(r.plane, r.display));
+    const prev = gl.getRenderTarget();
+    gl.setRenderTarget(r.target);
+    const bake = gl.compileAsync(bakeScene, cam); // compile() runs synchronously inside, with the target bound
+    gl.setRenderTarget(prev);
+    Promise.all([bake, gl.compileAsync(screenScene, cam)])
+      .catch(() => {})
+      .then(() => {
+        if (!cancelled) compiled.current = true;
+        invalidate();
+      });
     return () => {
+      cancelled = true;
       r.target.dispose();
       r.targetBlur.dispose();
       r.plane.dispose();
@@ -77,7 +100,6 @@ export function ContactShadows({
     r.display.opacity = opacity;
   }, [r, opacity]);
 
-  const invalidate = useThree((s) => s.invalidate);
   useEffect(() => {
     count.current = 0;
     invalidate();
@@ -100,7 +122,7 @@ export function ContactShadows({
   };
 
   useFrame(() => {
-    if (!shadowCamera.current || !group.current || count.current >= frames) return;
+    if (!compiled.current || !shadowCamera.current || !group.current || count.current >= frames) return;
     count.current++;
     const bg = scene.background;
     const override = scene.overrideMaterial;

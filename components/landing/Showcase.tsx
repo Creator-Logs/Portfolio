@@ -38,12 +38,19 @@ export function Showcase() {
       className="relative h-[300svh] max-md:h-[220svh] motion-reduce:h-auto"
       aria-labelledby="about-heading"
     >
-      <div className="sticky top-0 h-svh overflow-hidden motion-reduce:static motion-reduce:h-auto">
-        <SceneBlock loadMargin="100% 0px" posterAlt="The Illini EV steering wheel" className="!absolute inset-0">
+      {/* reduced motion: no pin — the section becomes one ordinary full-screen block with the poster */}
+      <div className="sticky top-0 h-svh overflow-hidden motion-reduce:relative">
+        <SceneBlock
+          loadMargin="100% 0px"
+          poster="/project_media/landing/showcase.webp"
+          posterFit="cover"
+          posterAlt="The Illini EV steering wheel, driver side"
+          className="!absolute inset-0"
+        >
           <ShowcaseScene progress={progress} mobile={mobile} />
         </SceneBlock>
 
-        <div className="px-page pointer-events-none relative z-10 flex h-full flex-col justify-between pb-10 pt-24 md:flex-row md:items-center md:pb-0 md:pt-0 motion-reduce:gap-12 motion-reduce:py-24">
+        <div className="px-page pointer-events-none relative z-10 flex h-full flex-col justify-between pb-10 pt-24 md:flex-row md:items-center md:pb-0 md:pt-0">
           <h2 id="about-heading" className="type-h2 md:max-w-[30%]">
             {HEADING.map((line, i) => (
               <span key={line} className={`block ${i === HEADING.length - 1 ? "text-orange" : ""}`}>

@@ -92,14 +92,8 @@ the software too** — and they should want to play with the page. The trinkets 
 - Tap a tile → small spec popover ("Used in: Steering Wheel, 3D Printer").
 - Can be 2D tiles with subtle 3D tilt if budget is tight — decide with Ansh.
 
-### 6. Experience (`#experience`)
-- Dotted-rule list rows (Oryzo reviews layout): role, org, dates (mono), 1–2 lines, link to project if relevant.
-  - **Illini Electric Motorsports** — Steering Wheel Project Lead, Cockpit (Aug 2025–Apr 2026); Dashboard & Telemetry (Apr 2026–Present)
-    *(telemetry project itself is out of scope — role line only, confirm with Ansh)*
-  - **The Garage Makerspace, UIUC** — Program Manager & Software Lead (Jan 2026–Present) — 300+ students trained/semester
-  - **TapCarry** — Founding Engineer (May–Aug 2026)
-  - **Education:** UIUC, B.S. Systems Engineering & Design, expected Dec 2028, GPA 3.96, Dean's List
-- Optional `DOWNLOAD RÉSUMÉ` pill.
+### 6. Experience — REMOVED by Ansh (2026-10-22)
+- Built in Phase 10, then removed at Ansh's request; the landing goes Selected works → Bench → Contact.
 
 ### 7. Contact / footer (`#contact`)
 - Huge line: `GOT AN IDEA?` / `LET'S BUILD IT.` (Badge Factory finale energy) + orange pill `EMAIL ME`.
@@ -140,13 +134,13 @@ the software too** — and they should want to play with the page. The trinkets 
 - [ ] Any sections you'd add/remove? Answer:
 
 ## Done when
-- [ ] Teardown committed; build passes on the new stack
-- [ ] All 7 sections implemented, desktop + 375px mobile
-- [ ] Trinkets interactive, links work, keyboard-accessible DOM fallback exists
-- [ ] Monitor video plays; live mode works or gracefully opens a new tab
-- [ ] Reduced-motion mode: posters, no pins, no Lenis
-- [ ] Perf budget from 3D_GUIDE met; Lighthouse desktop perf ≥ 80
-- [ ] README status updated, answers recorded below
+- [x] Teardown committed; build passes on the new stack
+- [x] All sections implemented (intro/blueprint, TapCarry and Experience cut by Ansh), desktop + 375–390px mobile
+- [x] Trinkets interactive, links work, keyboard-accessible DOM fallback exists
+- [x] Monitor shows the TapCarry still (video/iframe dropped by Ansh); click opens the case study
+- [x] Reduced-motion mode: posters, no pins, no Lenis (verified)
+- [x] Lighthouse desktop perf 84–85 (GPU on); scroll: 0 stalls at 1×/1.5× (headed, prod). Fidelity-first model sizes per Ansh.
+- [x] README status updated, answers recorded below
 
 ## Answers (filled during the build)
 STEP 0 (2026-10-22):

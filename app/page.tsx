@@ -5,7 +5,6 @@ import { ScrollCue } from "@/components/ui/ScrollCue";
 import { Showcase } from "@/components/landing/Showcase";
 import { SelectedWorks } from "@/components/landing/SelectedWorks";
 import { Bench } from "@/components/landing/Bench";
-import { Experience } from "@/components/landing/Experience";
 
 export default function Home() {
   return (
@@ -46,7 +45,6 @@ export default function Home() {
       <SelectedWorks />
       <Bench />
 
-      <Experience />
 
       <section id="contact" className="px-page flex min-h-[80svh] flex-col justify-center gap-10 py-24" aria-labelledby="contact-heading">
         <p className="type-label text-grey-brown">Contact</p>

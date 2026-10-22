@@ -48,7 +48,14 @@ export function HeroScene({ className }: { className?: string }) {
 
   return (
     <div className={className}>
-      <SceneBlock animate priority posterAlt="Ansh's projects laid out on a green cutting mat" className="h-full w-full">
+      <SceneBlock
+        animate
+        priority
+        poster={mobile ? "/project_media/landing/hero-mobile.webp" : "/project_media/landing/hero.webp"}
+        posterFit="cover"
+        posterAlt="Ansh's projects laid out on a green cutting mat: the TapCarry monitor, the 3D printer, the steering wheel and the IMU wearable"
+        className="h-full w-full"
+      >
         <HeroMatScene mobile={mobile} hovered={hovered} onHover={setHovered} onLabel={onLabel} onNavigate={onNavigate} />
       </SceneBlock>
 
