@@ -77,6 +77,7 @@ Fluid scale (Oryzo's method; implemented as `--u`, `--h1…--label` vars and `ty
 | Token | Desktop | Mobile |
 |---|---|---|
 | `--h1` (wordmark/hero) | 164u | 96u (scaled to mobile u) |
+| `--h1-hero` (landing wordmark only) | = `--h1` | 60u (keeps the name off the hero models) |
 | `--h2` (section/chapter title) | 68u | 38u |
 | `--h3` | 45u | 26u |
 | `--h4` | 32u | 16u |

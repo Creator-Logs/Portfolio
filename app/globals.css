@@ -32,6 +32,7 @@
 :root {
   --u: calc(100vw / 343);
   --h1: calc(96 * var(--u) * 0.94);
+  --h1-hero: calc(60 * var(--u)); /* landing wordmark — smaller on phones so it clears the models */
   --h2: calc(38 * var(--u));
   --h3: calc(26 * var(--u));
   --h4: calc(16 * var(--u));
@@ -45,6 +46,7 @@
   :root {
     --u: min(calc(100vw / 1800), calc(100vh / 820));
     --h1: calc(164 * var(--u));
+    --h1-hero: var(--h1);
     --h2: calc(68 * var(--u));
     --h3: calc(45 * var(--u));
     --h4: calc(32 * var(--u));

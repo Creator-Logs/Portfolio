@@ -16,7 +16,7 @@ export default function Home() {
         <div className="px-page pointer-events-none relative z-10 flex min-h-svh flex-col justify-between pb-8 pt-24 md:pb-10 md:pt-28">
           <div>
             <p className="type-label max-w-[46ch] text-cream/70">{site.tagline}</p>
-            <h1 className="type-h1 mt-4">
+            <h1 className="type-h1 mt-4" style={{ fontSize: "var(--h1-hero)" }}>
               <span className="block">Ansh</span>
               <span className="block">Gupta</span>
             </h1>
