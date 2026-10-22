@@ -177,7 +177,7 @@ Disable multisampling on the canvas when SMAA is used. Drop AO and bloom at low 
 
 ## 6. Signature effects
 
-- **Blueprint intro:** for each mesh, build `EdgesGeometry(geom, 25°)` → `LineSegments` with a dashed line material
+- **Blueprint intro (NOT used on the landing — cut by Ansh 2026-10-22; available for project pages only if asked):** for each mesh, build `EdgesGeometry(geom, 25°)` → `LineSegments` with a dashed line material
   in `--orange`; animate `dashOffset`/draw-range from 0 → full; meanwhile background `--olive` with a faint grid.
   Then reveal the shaded mesh with a world-space clip plane or a noise-dissolve in `onBeforeCompile`, crossfading
   background to `--ink`. Add dimension-style annotation lines (thin lines + mm labels via `<Html>`) for engineering flavour.

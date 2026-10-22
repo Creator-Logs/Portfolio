@@ -48,9 +48,8 @@ the software too** — and they should want to play with the page. The trinkets 
 ## Section spec
 
 ### 1. Intro → Hero bench (`#intro`)
-- **Loading/intro (≈2–3s, skippable on scroll/click):** olive background with faint grid; the trinkets' CAD edges
-  draw themselves in orange dashed lines with a few dimension annotations (`Ø 62.0`, `220 × 220 × 180 MM`).
-  Then they "render in" (clip/dissolve), background crossfades to ink, the bench appears. (Oryzo intro + 3D_GUIDE §6.)
+- **Loading/intro: CUT by Ansh (2026-10-22, Phase 5).** A blueprint draw-on → "print" reveal was built and removed;
+  the mat appears directly with models streaming in. Do not re-add.
 - **Mat scene (REVISED by Ansh 2026-10-22 — replaces the physics bench; built in Phase 4):** a green cutting mat
   (procedural: `components/landing/CuttingMat.tsx`, mm/cm/5 cm grid, ruler numbers, 45°/60° guides) on a warm dark
   desk, high 3/4 camera. Every model from `content/trinkets.ts` rests on it doing a gentle **idle animation** (bob +
@@ -140,7 +139,7 @@ the software too** — and they should want to play with the page. The trinkets 
 - [ ] Which email to show — `anshg3@illinois.edu` (résumé) or `anshgupta0621@gmail.com` (old site)? Answer:
 - [ ] How many trinkets, and should they be physics toys (drag/toss) or calmer (float + hover)? Answer:
 - [ ] Should clicking a trinket route to its project, or open a quick-look popover first? Answer:
-- [ ] Blueprint intro on every visit, or first visit only (sessionStorage)? Answer:
+- [x] Blueprint intro on every visit, or first visit only (sessionStorage)? Answer: first chose first-visit-only, then **cut it entirely** after seeing it (2026-10-22).
 - [ ] Monitor style: procedural generic, or a specific model? Answer:
 - [ ] Show GPA on the landing page? Answer:
 - [ ] Include the Illini EV telemetry role in the experience list even though the project is out of scope? Answer:
