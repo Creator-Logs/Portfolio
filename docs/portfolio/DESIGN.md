@@ -55,6 +55,8 @@ Tokens live in the Tailwind v4 `@theme` block in `app/globals.css` (so `bg-ink`,
 | `--studio-3` | `#F5F5F7` | Light studio bg (printer specs / CAD) |
 | `--studio-ink` | `#1D1D1F` | Text on light studio |
 | `--studio-muted` | `#86868B` / `#BFBFBF` | Labels on light studio |
+| Printer v1 palette | `#1B1B1B` `#2F2E2B` `#3D3C3A` `#BFBFBF` `#8D8D8D` `#F8F8F8` | **Printer page only** (preserved v1 values, used as arbitrary Tailwind colours in `components/printer/`) |
+| `--studio-warm` | `#E6E0D7` | Warm light sweep behind the Cycles product renders (Selected Works tiles); renders are lit on the same colour |
 
 Rules: one accent only (orange). Large surfaces are ink or studio grey; colour comes from the **models' materials**
 and photography. Text contrast ≥ 4.5:1 (cream on ink passes easily; grey-brown only for ≥ 14px labels).
@@ -97,7 +99,7 @@ Inline highlight in body (from Oryzo reviews): key phrase coloured orange, not b
 
 | Component | Spec |
 |---|---|
-| **Nav** | Fixed, transparent. Left: wordmark (display, ~22px, cream). Right: mono caps links (`WORK · ABOUT · CONTACT`), active link gets a dotted underline. Blends to studio-ink on light pages (via `mix-blend-difference` or a per-page theme prop). Mobile: `MENU / CLOSE` toggle → full-screen ink overlay. |
+| **Nav** | Fixed, transparent. Left: wordmark (display, ~22px, cream). Right: mono caps links (`WORK · ABOUT · CONTACT`), active link gets a dotted underline. Turns studio-ink while a section marked `data-nav-theme="light"` is under it (Nav probes on scroll); cream everywhere else. Mobile: `MENU / CLOSE` toggle → full-screen ink overlay. |
 | **Chapter eyebrow** | `01 / THE FOUNDATION` — DM Mono, label size, `--grey-brown`, number in cream. |
 | **Chapter title** | Display, `--h2`, 2–3 lines, last line orange optional. |
 | **Spec line** | DM Mono caps with `·` separators: `CARBON PLATE · 20-PLY · WATERJET-CUT`. |

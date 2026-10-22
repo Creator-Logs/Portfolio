@@ -1,11 +1,43 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { site } from "@/content/site";
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+
+  const pathname = usePathname();
+  const [light, setLight] = useState(false);
+
+  // Light studio sections opt in with `data-nav-theme="light"`; the nav goes studio-ink while one sits
+  // under it (printer page). Default is cream on ink.
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const probe = 32;
+      const under = Array.from(document.querySelectorAll<HTMLElement>("[data-nav-theme]")).find((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top <= probe && r.bottom > probe;
+      });
+      setLight(under?.dataset.navTheme === "light");
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [pathname]);
+
+  const tone = light && !open ? "text-studio-ink" : "text-cream";
 
   // Lock page scroll while the mobile overlay is open; close on Escape.
   useEffect(() => {
@@ -25,14 +57,14 @@ export function Nav() {
       <Link
         href="/"
         aria-label={`${site.name} — home`}
-        className="type-label text-cream transition-colors hover:text-orange"
+        className={`type-label ${tone} transition-colors hover:text-orange`}
         onClick={() => setOpen(false)}
       >
         {site.subBrand}
       </Link>
 
       <nav aria-label="Primary" className="hidden md:block">
-        <ul className="type-label flex items-center gap-2 text-cream">
+        <ul className={`type-label flex items-center gap-2 ${tone} transition-colors`}>
           {site.nav.map((item, i) => (
             <li key={item.href} className="flex items-center gap-2">
               {i > 0 && <span className="text-grey-brown">·</span>}
@@ -49,7 +81,7 @@ export function Nav() {
 
       <button
         type="button"
-        className="type-label relative z-10 text-cream md:hidden"
+        className={`type-label relative z-10 ${tone} md:hidden`}
         aria-expanded={open}
         aria-controls="mobile-menu"
         onClick={() => setOpen((v) => !v)}

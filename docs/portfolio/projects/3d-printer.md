@@ -137,13 +137,14 @@ Font: Clash Grotesk (variable). Content max width 1440px, centered.
 - [ ] Print speed / quality results, cost breakdown
 
 ## Questions for Ansh
-- [ ] Build volume: page says **200 × 185 × 160 mm**, engineering résumé says **220 × 220 × 180 mm** — which is correct? Answer:
-- [ ] Old `constants.tsx` also said "200x200x180 mm build volume" and "Klipper Firmware" — mention Klipper anywhere? Answer:
-- [ ] CAD tile label "Print Frame" → keep, or change to "Printer Frame"? Answer:
-- [ ] Hero "Tools Used" — add machining tools (lathe, CNC, sheet metal) or keep Fusion 360 + Blender only? Answer:
-- [ ] Should this page use the new dark nav, or a light variant to match the grey studio look? Answer:
-- [ ] Fill in Manufacturing now, or keep "Coming Soon"? Answer:
-- [ ] Which optional enhancements, if any? Answer:
+- [x] Build volume: page says **200 × 185 × 160 mm**, engineering résumé says **220 × 220 × 180 mm** — which is correct? Answer: **220 × 220 × 180 mm** (résumé). Specs table updated.
+- [x] Old `constants.tsx` also said "200x200x180 mm build volume" and "Klipper Firmware" — mention Klipper anywhere? Answer: **No.**
+- [x] CAD tile label "Print Frame" → keep, or change to "Printer Frame"? Answer: **"Printer Frame".**
+- [x] Hero "Tools Used" — add machining tools (lathe, CNC, sheet metal) or keep Fusion 360 + Blender only? Answer: Fusion 360 + Blender only (not raised; kept v1).
+- [x] Should this page use the new dark nav, or a light variant to match the grey studio look? Answer: **Light.** Implemented as `data-nav-theme="light"` on the light sections (nav goes studio-ink while one is under it).
+- [x] Fill in Manufacturing now, or keep "Coming Soon"? Answer: **Fill in now**, text only: lathe-turned shafts, sheet metal, FDM parts (no CNC heat spreader). Photos to come — set `image` on a row in `components/printer/PrinterManufacturing.tsx`.
+- [x] "How it Works" copy had the motor behaviour backwards (v1: both together → diagonal). Answer: **Fix it** → one motor alone → diagonal; both same way → straight along X; opposite → straight along Y.
+- [x] Which optional enhancements, if any? Answer: **Interactive Core-XY demo** (2D SVG, below the Core XY text/image) + **Manufacturing filled in**. No orbitable GLB.
 
 ## Done when
 - [ ] Side-by-side screenshot comparison vs v1 at 1440×900 shows the same layout/copy/images (use
