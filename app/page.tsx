@@ -1,16 +1,14 @@
 import { ChapterHeader } from "@/components/ui/ChapterHeader";
-import { SpecLine } from "@/components/ui/SpecLine";
 import { PillButton } from "@/components/ui/PillButton";
 import { site } from "@/content/site";
-import { projects } from "@/content/projects";
 import { HeroScene } from "@/components/landing/HeroScene";
 import { ScrollCue } from "@/components/ui/ScrollCue";
 import { Showcase } from "@/components/landing/Showcase";
+import { SelectedWorks } from "@/components/landing/SelectedWorks";
 
 // Phase 1 shell: every landing section exists with its anchor and final typography,
 // and gets its real content/3D in the phase noted in each placeholder.
 const placeholders = [
-  { id: "tapcarry", eyebrow: "Software · Founding engineer · Phase 7", lines: ["TapCarry"] },
   { id: "bench", eyebrow: "Everything on the bench · Phase 9", lines: ["The toolchain"] },
   { id: "experience", eyebrow: "Experience · Phase 10", lines: ["Where I build"] },
 ];
@@ -51,29 +49,9 @@ export default function Home() {
 
       <Showcase />
 
-      {placeholders.slice(0, 1).map((s) => (
-        <PlaceholderSection key={s.id} {...s} />
-      ))}
+      <SelectedWorks />
 
-      <section id="work" className="px-page py-24">
-        <ChapterHeader eyebrow="Selected works · Phase 8" lines={["Selected", "works."]} accentLast />
-        <ol className="mt-12">
-          {projects.map((p) => (
-            <li key={p.slug} className="rule-dotted grid gap-2 py-6 md:grid-cols-[8rem_1fr_auto] md:items-baseline">
-              <span className="type-label text-grey-brown">
-                {String(p.order).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
-              </span>
-              <div>
-                <h3 className="type-h3">{p.title}</h3>
-                <SpecLine className="mt-2">{p.specLine}</SpecLine>
-              </div>
-              <span className="type-label text-grey-brown">{p.period}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {placeholders.slice(1).map((s) => (
+      {placeholders.map((s) => (
         <PlaceholderSection key={s.id} {...s} />
       ))}
 

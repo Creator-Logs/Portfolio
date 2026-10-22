@@ -156,6 +156,7 @@
 
 /* Dev QA pages (/dev/*): hide chrome that would make screenshots non-deterministic. */
 .qa header,
-.qa .grain {
+.qa .grain,
+.qa nextjs-portal {
   display: none;
 }

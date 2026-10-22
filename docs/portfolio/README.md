@@ -57,7 +57,7 @@ between those sessions.
 | Page | Status | Notes |
 |---|---|---|
 | Foundation (in landing session) | ◐ in progress | Phase 1 (stack/tokens/nav) ✅, Phase 2 (3D layer + runtime rules) ✅ — see landing.md phases |
-| Landing | ◐ in progress | Phases 1–4 + 6 done (5 = blueprint intro, cut). Next: 7 TapCarry monitor section |
+| Landing | ◐ in progress | Phases 1–4, 6, 8 done (5 blueprint intro + 7 TapCarry section cut by Ansh). Next: 9 bench/skills |
 | 3D Printer | ☐ not started | |
 | FSAE Steering Wheel | ☐ not started | |
 | IMU Jump-Height Wearable | ☐ not started | |

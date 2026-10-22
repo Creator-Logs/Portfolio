@@ -36,6 +36,7 @@ const list: Project[] = [
     period: "Aug 2025 – Apr 2026",
     tools: [{ name: "PTC Creo", logo: "/logos/Creo.svg" }, { name: "Ansys", logo: "/logos/Ansys.svg" }],
     specLine: "Carbon-fiber baseplate · SLS enclosure · Min FoS ~3",
+    poster: "/project_media/steering-wheel/poster.webp",
   },
   {
     slug: "3d-printer",
@@ -46,6 +47,7 @@ const list: Project[] = [
     period: "Summer 2025",
     tools: [{ name: "Fusion 360", logo: "/logos/Fusion360.svg" }, { name: "Blender", logo: "/logos/Blender.svg" }],
     specLine: "Core-XY · 220 × 220 × 180 mm · Fusion 360",
+    poster: "/project_media/3d-printer/poster.webp",
   },
   {
     slug: "imu-wearable",
@@ -56,6 +58,7 @@ const list: Project[] = [
     period: "Jan – May 2026",
     tools: [{ name: "KiCad" }, { name: "C++" }, { name: "Python" }, { name: "PyTorch" }],
     specLine: "Custom PCB · 500 Hz · 1D CNN · 2.5 cm mean error",
+    poster: "/project_media/imu-wearable/poster.webp",
   },
   {
     slug: "camera-gimbal",
@@ -77,6 +80,7 @@ const list: Project[] = [
     period: "May – Aug 2026",
     tools: [{ name: "Next.js" }, { name: "PostgreSQL" }],
     specLine: "Next.js · PostgreSQL · 14 tables · Sole engineer",
+    poster: "/project_media/tapcarry/hero.webp",
   },
   {
     slug: "garage-inventory",

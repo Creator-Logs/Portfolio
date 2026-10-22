@@ -278,6 +278,14 @@ scroll frame (drei View has to re-align), so its per-frame GPU cost competes wit
 25. Effects that measure/centre models must be idempotent (reset the transform first): dev double-invoke /
     remounts otherwise measure an already-shifted group (the showcase wheel ended up 76 mm off-centre).
 
+26. **Nothing opaque over a SceneBlock.** The canvas is fixed *behind* the page, so any DOM background or
+    overlay inside/over a 3D box hides or hazes the model (hit twice: a CSS glow over the showcase, a `bg-ink-2`
+    thumbnail box). Glows/backdrops behind a model belong in the 3D scene.
+
+27. **Hover-mounted 3D needs hover intent** (rest ≥ 250 ms, no scroll in the last 200 ms): content scrolling under a
+    resting cursor fires mouseenter. And give such scenes the **same light rig** as an earlier scene so their
+    shader programs are already compiled (light count is part of the program key). Measured: 742 ms -> 0 stalls.
+
 **Lazy 3D content**: create `React.lazy` scene components inside a *client* module that renders the `SceneBlock`
 (e.g. `components/landing/HeroScene.tsx`). Passing a lazy export through a Server Component double-wraps it and crashes.
 

@@ -72,17 +72,9 @@ the software too** — and they should want to play with the page. The trinkets 
   UIUC, 3.96 GPA."*
 - Footnote bottom-right with dotted rule (e.g. which project the object is from).
 
-### 3. TapCarry monitor (`#tapcarry`)
-- A 3D monitor (desk display, thin bezel, stand) on the dark bench, slightly angled; screen plays the **recorded
-  scroll video** of the TapCarry landing page (`VideoTexture`, muted, loop, `toneMapped:false`).
-- Left/right copy: eyebrow `SOFTWARE · FOUNDING ENGINEER`, title `TAPCARRY`, one-line: *"Apple & Google Wallet loyalty
-  platform — shipped v1 in two weeks as the sole engineer."* Stats row: `2 WEEKS` to v1 · `65` merchant sign-ups ·
-  `80%` egress cut · `14` tables, tenant-isolated.
-- Interaction: click screen (or "TRY IT LIVE" pill) → camera `expo.inOut` dolly until the screen fills the viewport
-  → swap to a live `<iframe>` (drei `<Html transform occlude>` or a DOM overlay aligned to the screen) → close
-  button returns. If the site disallows framing (X-Frame-Options/CSP), open in new tab instead.
-- CTA pill: `READ THE CASE STUDY` → `/projects/tapcarry`.
-- Monitor model: procedural (rounded box + plane) unless Ansh has one / prefers a specific model (e.g. Studio Display-like).
+### 3. TapCarry monitor — CUT by Ansh (2026-10-22, Phase 7 skipped)
+- No separate TapCarry section on the landing. TapCarry stays as the monitor on the hero mat and as row 05 in
+  Selected works; its full story lives on `/projects/tapcarry`.
 
 ### 4. Selected works (`#work`)
 - Badge Factory chapter style, one row per project, ordered from `content/projects.ts`:
@@ -178,4 +170,9 @@ Phase 3 (models, 2026-10-22):
 Phase 6 (pinned showcase, 2026-10-22):
 - Heading: **DESIGNED. / MACHINED. / CODED.** (last line orange). Paragraph without GPA.
 - Built with CSS sticky (not a GSAP pin), detail wheel LOD loaded a screen ahead, renders only on scroll.
+Phase 8 (selected works, 2026-10-22):
+- Rows from `content/projects.ts`; media = still poster (rendered from /dev/models view 0 → public/project_media/<slug>/poster.webp;
+  TapCarry uses its hero screenshot); desktop hover-intent (250 ms rest, no scroll) mounts the live spinning model.
+- Gimbal + Garage have no media yet ("Media coming soon" tiles) — ask Ansh in those project sessions.
+- Known, for Phase 11: ~2 s main-thread freeze during first load while the 9 MB printer mat GLB uploads.
 - Note for the printer session: the v1 printer page overflows horizontally at 375px (see `reference/printer-v1-mobile.png`).
