@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { DM_Mono, Inter } from "next/font/google";
 import { Nav } from "@/components/ui/Nav";
 import { Grain } from "@/components/ui/Grain";
+import { Footer } from "@/components/ui/Footer";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { SceneRoot } from "@/components/three/SceneRoot";
 import "./globals.css";
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         {/* Above the fixed canvas; 3D shows through transparent View boxes. */}
         <div className="relative z-[1]">{children}</div>
+        <Footer />
         <Grain />
       </body>
     </html>

@@ -1,4 +1,3 @@
-import { ChapterHeader } from "@/components/ui/ChapterHeader";
 import { PillButton } from "@/components/ui/PillButton";
 import { site } from "@/content/site";
 import { HeroScene } from "@/components/landing/HeroScene";
@@ -6,12 +5,7 @@ import { ScrollCue } from "@/components/ui/ScrollCue";
 import { Showcase } from "@/components/landing/Showcase";
 import { SelectedWorks } from "@/components/landing/SelectedWorks";
 import { Bench } from "@/components/landing/Bench";
-
-// Phase 1 shell: every landing section exists with its anchor and final typography,
-// and gets its real content/3D in the phase noted in each placeholder.
-const placeholders = [
-  { id: "experience", eyebrow: "Experience · Phase 10", lines: ["Where I build"] },
-];
+import { Experience } from "@/components/landing/Experience";
 
 export default function Home() {
   return (
@@ -52,27 +46,25 @@ export default function Home() {
       <SelectedWorks />
       <Bench />
 
-      {placeholders.map((s) => (
-        <PlaceholderSection key={s.id} {...s} />
-      ))}
+      <Experience />
 
-      <section id="contact" className="px-page flex min-h-[70svh] flex-col justify-center gap-8 py-24">
-        <h2 className="type-h1">
+      <section id="contact" className="px-page flex min-h-[80svh] flex-col justify-center gap-10 py-24" aria-labelledby="contact-heading">
+        <p className="type-label text-grey-brown">Contact</p>
+        <h2 id="contact-heading" className="type-h1">
           <span className="block">Got an idea?</span>
           <span className="block text-orange">Let&apos;s build it.</span>
         </h2>
-        <div>
+        <div className="flex flex-wrap items-center gap-3">
           <PillButton href={`mailto:${site.email}`}>Email me</PillButton>
+          <PillButton href={site.links.linkedin} variant="ink" target="_blank" rel="noreferrer">
+            LinkedIn ↗
+          </PillButton>
+          <PillButton href={site.links.github} variant="ink" target="_blank" rel="noreferrer">
+            GitHub ↗
+          </PillButton>
         </div>
+        <p className="type-label text-grey-brown">{site.email}</p>
       </section>
     </main>
-  );
-}
-
-function PlaceholderSection({ id, eyebrow, lines }: { id: string; eyebrow: string; lines: string[] }) {
-  return (
-    <section id={id} className="px-page flex min-h-[80svh] items-center border-t border-dotted border-brown py-24">
-      <ChapterHeader eyebrow={eyebrow} lines={lines} accentLast={lines.length > 1} />
-    </section>
   );
 }

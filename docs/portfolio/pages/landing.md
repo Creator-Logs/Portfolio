@@ -128,14 +128,14 @@ the software too** — and they should want to play with the page. The trinkets 
 ## Questions for Ansh (ask as relevant; write answers inline)
 - [ ] Wordmark: `ANSH GUPTA` vs `CREATOR LOGS`? Answer:
 - [x] Tagline wording? Answer: keep "Systems Engineering & Design @ UIUC — I design it, machine it, and code it." (2026-10-22)
-- [ ] Which email to show — `anshg3@illinois.edu` (résumé) or `anshgupta0621@gmail.com` (old site)? Answer:
+- [x] Which email to show? Answer: default applied (Ansh: "finish without approvals") — `anshg3@illinois.edu` (résumé). Change in `content/site.ts`.
 - [ ] How many trinkets, and should they be physics toys (drag/toss) or calmer (float + hover)? Answer:
 - [ ] Should clicking a trinket route to its project, or open a quick-look popover first? Answer:
 - [x] Blueprint intro on every visit, or first visit only (sessionStorage)? Answer: first chose first-visit-only, then **cut it entirely** after seeing it (2026-10-22).
 - [ ] Monitor style: procedural generic, or a specific model? Answer:
 - [x] Show GPA on the landing page? Answer: **no GPA** (2026-10-22).
-- [ ] Include the Illini EV telemetry role in the experience list even though the project is out of scope? Answer:
-- [ ] Résumé download — engineering or software version (or both)? Answer:
+- [x] Include the Illini EV telemetry role? Answer: default applied — role line only, no project link.
+- [x] Résumé download? Answer: default applied — **no download yet** (the PDF contains Ansh's phone number; publishing it is his call). Add a `PillButton` to `#contact` + the PDF in `public/` when he decides.
 - [x] Bench/skills section: full 3D or 2D tiles? Answer: **2D tiles with tilt** on a CSS cutting mat (2026-10-22).
 - [ ] Any sections you'd add/remove? Answer:
 
