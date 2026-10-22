@@ -157,4 +157,18 @@ the software too** — and they should want to play with the page. The trinkets 
 - [ ] README status updated, answers recorded below
 
 ## Answers (filled during the build)
--
+STEP 0 (2026-10-22):
+- **Hero (changed from spec):** green cutting mat with every model on it doing an idle animation; hover shows the
+  name, click routes to the project. **No physics / drag / tidy-up.**
+- **Models:** STEP files for the 3D printer, IMU device and steering wheel (`~/Downloads/3D Models - STP/`), plus a
+  TapCarry monitor model. More models will be added later. **Keep them detailed — no optimisation that causes visual defects.**
+- **Hero showcase object (section 2):** steering wheel.
+- **TapCarry:** a still picture of the tapcarry.com hero section on the monitor (no video, no live iframe); clicking
+  goes to the case study `/projects/tapcarry`. Claude captures the screenshot.
+- **Wordmark:** `ANSH GUPTA` only in the hero (not repeated in the nav); nav shows the `CREATOR LOGS` mono sub-brand.
+- **Intro card:** includes a photo of Ansh (placeholder slot until he provides the photo).
+- **Fonts:** Cabinet Grotesk (display) + Inter (body) + DM Mono (labels).
+- **Assets:** keep `ansh_gupta_portrait.webp`; deleted `creator_logs_hero_image.webp` and `Overlay.svg`.
+- **Process:** build phase by phase with approval at each checkpoint; follow three.js docs best practices so the site
+  doesn't crash or lag.
+- Note for the printer session: the v1 printer page overflows horizontally at 375px (see `reference/printer-v1-mobile.png`).

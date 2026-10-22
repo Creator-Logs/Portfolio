@@ -26,3 +26,10 @@ out
 *.njsproj
 *.sln
 *.sw?
+
+# Raw CAD / source assets (large)
+assets-src/
+
+# Build artifacts / personal source docs (contain contact details)
+*.tsbuildinfo
+Ansh_Gupta_*Resume*.pdf

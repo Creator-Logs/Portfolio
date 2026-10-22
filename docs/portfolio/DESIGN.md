@@ -36,7 +36,7 @@ rendered objects — Ansh designs it, machines it, and codes it.
 
 ## 2. Colour
 
-Tokens live as CSS variables in `app/globals.css` and are mirrored in `tailwind.config` and `components/three/materials.ts`.
+Tokens live in the Tailwind v4 `@theme` block in `app/globals.css` (so `bg-ink`, `text-cream`… work and the values are CSS vars) and are mirrored in `components/three/materials.ts`. There is no `tailwind.config` file.
 
 | Token | Hex | Use |
 |---|---|---|
@@ -66,11 +66,11 @@ bottom-left that drifts with scroll).
 
 | Role | Font | Style |
 |---|---|---|
-| Display | Heavy grotesk, **uppercase**. Oryzo uses *Halyard Display* (Adobe, paid). Use **Clash Grotesk** (already in repo, variable 200–700) at 600–700 — or confirm an alternative with Ansh (candidates: *Clash Display*, *Cabinet Grotesk*, *Bricolage Grotesque*, *Unbounded* — all free via Fontshare/Google). | tracking `-0.02em`, line-height 0.9–0.95 |
-| Body | Calm grotesk: **Inter** or Clash Grotesk 400 | 1.35 line-height, max 60ch |
+| Display | **Cabinet Grotesk** (Fontshare, self-hosted woff2 500/700/800/900 in `public/fonts/`, `--font-cabinet`) — chosen by Ansh 2026-10-22. Headings use 800, wordmark 800. (Clash Grotesk TTF stays in `public/fonts/` only for the printer page port.) | uppercase, tracking `-0.02em`, line-height 0.9–0.95 |
+| Body | **Inter** (`next/font/google`) | 1.35 line-height, max 60ch |
 | Mono / labels | **DM Mono** 400 (Google Fonts) | uppercase, tracking `+0.04em`, small sizes |
 
-Fluid scale (Oryzo's method): `--u = min(100vw / 1800, 100vh / 820)` on desktop, `--u = 100vw / 343` on mobile.
+Fluid scale (Oryzo's method; implemented as `--u`, `--h1…--label` vars and `type-h1…type-label` utilities in `globals.css`): `--u = min(100vw / 1800, 100vh / 820)` on desktop, `--u = 100vw / 343` on mobile.
 
 | Token | Desktop | Mobile |
 |---|---|---|
