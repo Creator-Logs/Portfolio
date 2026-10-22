@@ -51,12 +51,13 @@ the software too** — and they should want to play with the page. The trinkets 
 - **Loading/intro (≈2–3s, skippable on scroll/click):** olive background with faint grid; the trinkets' CAD edges
   draw themselves in orange dashed lines with a few dimension annotations (`Ø 62.0`, `220 × 220 × 180 MM`).
   Then they "render in" (clip/dissolve), background crossfades to ink, the bench appears. (Oryzo intro + 3D_GUIDE §6.)
-- **Bench scene:** a dark cutting mat (olive-tinted, mm grid, ruler numbers on edges) on a warm dark desk, viewed
-  from a high 3/4 angle with shallow depth of field. Trinkets rest on it with physics:
-  - drag & toss (rapier), they collide and settle;
-  - hover → lift + orange rim + mono label (`CORE-XY PULLEY HUB · 3D PRINTER`);
-  - click → camera pushes in slightly then routes to the linked project page;
-  - "tidy up" link (Badge Factory) resets them to a neat grid.
+- **Mat scene (REVISED by Ansh 2026-10-22 — replaces the physics bench; built in Phase 4):** a green cutting mat
+  (procedural: `components/landing/CuttingMat.tsx`, mm/cm/5 cm grid, ruler numbers, 45°/60° guides) on a warm dark
+  desk, high 3/4 camera. Every model from `content/trinkets.ts` rests on it doing a gentle **idle animation** (bob +
+  sway, own phase); **no physics, no drag, no tidy-up**:
+  - hover → lift + orange fresnel rim + mono label pill + orange ring cursor;
+  - click → camera pushes in (`expo.inOut`, 0.7 s) then routes to the project page;
+  - models stream in one at a time (smallest first), mat LOD only; IMU shown with its sleeve slid off (electronics visible).
 - **Overlay type:** huge wordmark top-left (`--h1`, cream). Mono tagline above or below, e.g.
   `SYSTEMS ENGINEERING & DESIGN @ UIUC — I DESIGN IT, MACHINE IT, AND CODE IT.` (confirm with Ansh).
   Glass card bottom-left: 2–3 lines intro (name, school, GPA optional). Scroll cue bottom-centre.
@@ -135,7 +136,7 @@ the software too** — and they should want to play with the page. The trinkets 
 
 ## Questions for Ansh (ask as relevant; write answers inline)
 - [ ] Wordmark: `ANSH GUPTA` vs `CREATOR LOGS`? Answer:
-- [ ] Tagline wording? Answer:
+- [x] Tagline wording? Answer: keep "Systems Engineering & Design @ UIUC — I design it, machine it, and code it." (2026-10-22)
 - [ ] Which email to show — `anshg3@illinois.edu` (résumé) or `anshgupta0621@gmail.com` (old site)? Answer:
 - [ ] How many trinkets, and should they be physics toys (drag/toss) or calmer (float + hover)? Answer:
 - [ ] Should clicking a trinket route to its project, or open a quick-look popover first? Answer:

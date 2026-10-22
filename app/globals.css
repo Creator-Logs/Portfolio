@@ -108,11 +108,10 @@
 @utility rule-dotted {
   border-top: 1px dotted var(--color-grey-brown);
 }
+/* No backdrop-filter: blurring a live WebGL canvas every frame stalls scrolling (3D_GUIDE §7b). */
 @utility glass {
-  background: rgba(255, 237, 215, 0.06);
+  background: rgba(26, 18, 12, 0.72);
   border: 1px solid rgba(255, 237, 215, 0.12);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
 }
 
 /* ── Base ───────────────────────────────────────────────────────────────── */
@@ -138,31 +137,20 @@
   }
 }
 
-/* ── Grain (DESIGN.md §5) ───────────────────────────────────────────────── */
+/* ── Grain (DESIGN.md §5) ───────────────────────────────────────────────
+   Static, normal-blended, viewport-sized. mix-blend-mode / an animated oversized layer over the
+   WebGL canvas forced full recompositing every frame and froze scrolling (3D_GUIDE §7b). */
 .grain {
   position: fixed;
-  inset: -50%;
-  width: 200%;
-  height: 200%;
+  inset: 0;
   pointer-events: none;
   z-index: 60;
-  opacity: 0.06;
-  mix-blend-mode: overlay;
+  opacity: 0.05;
   background-image: url("/textures/noise.png");
   background-size: 256px 256px;
-  animation: grain 0.8s steps(4) infinite;
-}
-
-@keyframes grain {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(-3%, 2%); }
-  50% { transform: translate(2%, -4%); }
-  75% { transform: translate(-2%, 3%); }
-  100% { transform: translate(0, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .grain { animation: none; }
   html { scroll-behavior: auto; }
 }
 

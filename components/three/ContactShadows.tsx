@@ -18,6 +18,8 @@ type Props = Omit<React.JSX.IntrinsicElements["group"], "scale"> & {
   far?: number;
   resolution?: number;
   color?: THREE.ColorRepresentation;
+  /** Change this value to re-bake (e.g. after another model has loaded). */
+  bake?: number;
 };
 
 export function ContactShadows({
@@ -28,6 +30,7 @@ export function ContactShadows({
   far = 10,
   resolution = 512,
   color = "#000000",
+  bake = 0,
   ...props
 }: Props) {
   const group = useRef<THREE.Group>(null);
@@ -73,6 +76,12 @@ export function ContactShadows({
   useEffect(() => {
     r.display.opacity = opacity;
   }, [r, opacity]);
+
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    count.current = 0;
+    invalidate();
+  }, [bake, invalidate]);
 
   const blurPass = (amount: number) => {
     const cam = shadowCamera.current!;

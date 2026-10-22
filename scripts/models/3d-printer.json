@@ -1,7 +1,8 @@
 {
-  "_doc": "Config for scripts/models/process.py. Material patterns are case-insensitive regexes on part names; first match wins. rotate_deg (Blender axes) turns the user-facing side to +Z (glTF front). Colours are defaults pending Ansh's confirmation; v1 printer page photos show black 2020 extrusions, black/grey printed parts.",
+  "_doc": "Config for scripts/models/process.py. Material patterns are case-insensitive regexes on part names; first match wins. rotate_deg (Blender axes) turns the user-facing side to +Z (glTF front). Colours are defaults pending Ansh's confirmation; front = the side shown in the v1 hero render (motors at top corners, centred lead screw, PSU at the bottom); v1 printer page photos show black 2020 extrusions, black/grey printed parts.",
   "source": "assets-src/trinkets/3D Printer.step",
   "up": "z",
+  "rotate_deg": [0, 0, -90],
   "materials": [
     ["EXTRUSION|2020|V-?SLOT|T-?SLOT", "alu_extrusion_black"],
     ["LEAD.?SCREW|7549K|ROD|SHAFT|LM\\d+UU|LINEAR", "steel_polished"],

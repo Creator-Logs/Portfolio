@@ -8,11 +8,16 @@ import { ContactShadows } from "@/components/three/ContactShadows";
 import { Model } from "@/components/three/Model";
 import { StudioEnvironment, type StudioPreset } from "@/components/three/StudioEnvironment";
 
-// Fixed QA cameras, fitted to the model's bounds: 3/4 hero, top-down (mat view), close-up.
+// Fixed QA cameras, fitted to the model's bounds: 0 3/4 hero, 1 top-down (mat view), 2 close-up,
+// 3-6 front (+Z) / right (+X) / back (-Z) / left (-X) at a slight elevation, for orientation review.
 const VIEWS = [
   { dir: [-1, 0.65, 1.25], zoom: 1 },
   { dir: [0.0001, 1, 0.12], zoom: 1 },
   { dir: [1, 0.35, 0.9], zoom: 2.4 },
+  { dir: [0, 0.3, 1], zoom: 1 },
+  { dir: [1, 0.3, 0], zoom: 1 },
+  { dir: [0, 0.3, -1], zoom: 1 },
+  { dir: [-1, 0.3, 0], zoom: 1 },
 ];
 
 export default function ModelQAScene({ src, view, env }: { src: string; view: number; env: StudioPreset }) {

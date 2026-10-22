@@ -48,6 +48,16 @@ bpy.ops.import_scene.gltf(filepath=raw_path, merge_vertices=False)
 meshes = [o for o in bpy.context.scene.objects if o.type == "MESH"]
 log(f"imported {len(meshes)} mesh objects, {sum(len(o.data.polygons) for o in meshes):,} polys")
 
+# -- 1b. exploded parts ("explode": [[regex, [dx, dy, dz]]], mm in STEP coordinates) -----
+# Applied before culling, so whatever a moved part uncovers is kept. glTF import maps
+# STEP (x, y, z) -> Blender (x, -z, y).
+for pattern, (dx, dy, dz) in cfg.get("explode", []):
+    rx = re.compile(pattern, re.I)
+    moved = [o for o in meshes if rx.search(o.name)]
+    for o in moved:
+        o.matrix_world = mathutils.Matrix.Translation(mathutils.Vector((dx, -dz, dy)) / 1000) @ o.matrix_world
+    log(f"explode {pattern!r}: moved {len(moved)} parts by {(dx, dy, dz)} mm")
+
 # -- 2. orientation + centring ---------------------------------------------------
 # cascadio writes STEP coordinates as-is; after glTF import, STEP +Z sits on Blender -Y.
 root = bpy.data.objects.new("root", None)

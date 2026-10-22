@@ -249,13 +249,26 @@ Written 2026-10-22 from the three.js manual (disposal, render on demand, optimis
     **hit proxy** (box/hull from the bounding box). Detailed models stay detailed and hover stays O(1).
 
 **Quality scaling** (never by reducing model detail)
-15. `PerformanceMonitor` steps DPR within `[1, 1.75]` (mobile cap 1.5) and is the only thing that lowers quality;
+15. `PerformanceMonitor` steps DPR within `[1, min(devicePixelRatio, 1.25)]` (see rule 19; was 1.75 — caused scroll freezes) and is the only thing that lowers quality;
     later it may also drop post-FX and shadow resolution. Model geometry is never simplified at runtime.
 16. Use **our** `StudioEnvironment` (bakes each preset once into a shared PMREM texture for the app's lifetime) and
     **our** `ContactShadows` (bakes once by default, disposes its render targets). Don't use drei's `<Environment>` or
     `<ContactShadows>`: measured with `?debug`, they leak 1 and 2 textures per mount respectively.
 17. Post-processing (if any) must work with Views — decide per scene; not used in the foundation.
 18. Mobile: stream models one at a time (sequential `Suspense`), DPR cap 1.5.
+
+**Scroll lag (found 2026-10-22, Ansh reported "lags like crazy" scrolling in/out of the hero)** — measured in
+headed Chrome on an Intel iGPU (ANGLE/D3D11) with wheel scrolling + Lenis; Chrome trace showed the GPU thread
+blocked in `DXGISwapChainImageBacking::Present` for up to 12 s. A fixed full-screen canvas re-renders on *every*
+scroll frame (drei View has to re-align), so its per-frame GPU cost competes with Chrome's page compositing:
+19. **MSAA above ~1.25× DPR is the killer**: render DPR is `min(devicePixelRatio, 1.25)` with `antialias: true`.
+    (1.5× + MSAA → 12 s freezes; 1.25× + MSAA → 0 stalls, p99 12.5 ms at 1×/1.5×/2× screen scales.) Never let
+    PerformanceMonitor raise DPR above the device's real ratio.
+20. **No `backdrop-filter` and no `mix-blend-mode`** on anything layered over the canvas (they force re-compositing
+    of the live canvas every frame). Glass = solid translucent ink; grain = static, normal-blended, viewport-sized.
+21. Keep `MeshPhysicalMaterial` extras (clearcoat/sheen/anisotropy) at 0 unless they visibly matter.
+22. How to test: `scripts`-style Playwright run in **headed** Chrome (`headless: false`) with `mouse.wheel`, at
+    deviceScaleFactor 1, 1.5 and 2; count rAF gaps > 150 ms. Headless shows ~2 s artefact gaps even when headed is clean.
 
 **Lazy 3D content**: create `React.lazy` scene components inside a *client* module that renders the `SceneBlock`
 (e.g. `components/landing/HeroScene.tsx`). Passing a lazy export through a Server Component double-wraps it and crashes.

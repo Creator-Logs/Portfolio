@@ -1,14 +1,52 @@
 {
-  "_doc": "Config for scripts/models/process.py. Material patterns are case-insensitive regexes on part names; first match wins. Colours are placeholders (Ansh: tune with lighting later). Known gap: the STEP lacks the PCB pads, part of the PCB, 0402 R/C, VL53L1X and JST bodies (Fusion mesh bodies) - used as-is for now. The IMU is tiny (33 mm), so the mat LOD keeps detail tolerances.",
+  "_doc": "Config for scripts/models/process.py. Material patterns are case-insensitive regexes on part names; first match wins. Colours are placeholders (Ansh: tune with lighting later). Known gap: the STEP lacks the PCB pads, part of the PCB, 0402 R/C, VL53L1X and JST bodies (Fusion mesh bodies) - used as-is for now. The IMU is tiny (33 mm), so the mat LOD keeps detail tolerances. Ansh (Phase 4): bottom cap lifted off so the electronics show on the mat.",
   "source": "assets-src/trinkets/IMU_Jump_Device.step",
   "up": "z",
-  "lods": { "mat": { "linear_mm": 0.02, "angular_deg": 20 } },
+  "lods": {
+    "mat": {
+      "linear_mm": 0.02,
+      "angular_deg": 20
+    }
+  },
   "materials": [
-    ["^Top|^Bottom|BOSS-EXTRUDE14", "pla_matte", "#2b2b2b"],
-    ["PCB|Bile", "pcb_soldermask", "#0d3b1e"],
-    ["Shield|U\\.FL", "steel_polished"],
-    ["Battery", "pla_silk", "#8a8a8a"],
-    ["LGA|LED|SW_PUSH|Button|CHAMFER|CUT-EXTRUDE|MIRROR|BOSS-EXTRUDE7|SOLID", "pla_matte", "#151515"],
-    [".*", "pla_matte", "#333333"]
+    [
+      "^Top|^Bottom|BOSS-EXTRUDE14",
+      "pla_matte",
+      "#2b2b2b"
+    ],
+    [
+      "PCB|Bile",
+      "pcb_soldermask",
+      "#0d3b1e"
+    ],
+    [
+      "Shield|U\\.FL",
+      "steel_polished"
+    ],
+    [
+      "Battery",
+      "pla_silk",
+      "#8a8a8a"
+    ],
+    [
+      "LGA|LED|SW_PUSH|Button|CHAMFER|CUT-EXTRUDE|MIRROR|BOSS-EXTRUDE7|SOLID",
+      "pla_matte",
+      "#151515"
+    ],
+    [
+      ".*",
+      "pla_matte",
+      "#333333"
+    ]
+  ],
+  "explode": [
+    [
+      "^Top",
+      [
+        0,
+        -52,
+        10
+      ]
+    ]
   ]
 }
