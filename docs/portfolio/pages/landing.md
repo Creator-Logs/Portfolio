@@ -171,4 +171,8 @@ STEP 0 (2026-10-22):
 - **Assets:** keep `ansh_gupta_portrait.webp`; deleted `creator_logs_hero_image.webp` and `Overlay.svg`.
 - **Process:** build phase by phase with approval at each checkpoint; follow three.js docs best practices so the site
   doesn't crash or lag.
+Phase 3 (models, 2026-10-22):
+- Hero mat loads the **mat LOD only** (exact CAD at 0.1 mm); full detail is for project pages + the pinned showcase.
+- IMU: use the STEP **as-is** for now (missing Fusion mesh-body parts); it renders as a closed enclosure from outside.
+- Materials/colours: **render with defaults now; tune lighting + materials together later**.
 - Note for the printer session: the v1 printer page overflows horizontally at 375px (see `reference/printer-v1-mobile.png`).

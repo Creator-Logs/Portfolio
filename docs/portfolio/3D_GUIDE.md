@@ -8,6 +8,53 @@ and clean normals, (4) honest material presets, (5) soft contact shadows + AO.**
 
 ## 1. Asset pipeline
 
+### 1.0 What actually runs (built 2026-10-22, Phase 3) — read this first
+Blender 5.2 has **no STEP importer**, and Ansh's CAD arrives as STEP, so the shipped pipeline is scripted end to end:
+
+```
+STEP ─cascadio (OpenCASCADE)─▶ raw GLB ─Blender headless (process.py)─▶ processed GLB ─gltf-transform─▶ public/models/<slug>/
+```
+```bash
+scripts/models/build.sh <slug> [detail|mat]   # needs .venv-models (cascadio, trimesh) + Blender 5.2
+scripts/models/qa.sh    <slug> [detail|mat]   # dev server on :3000; pixel-diffs vs the uncompressed detail build
+```
+Per-model config: `scripts/models/<slug>.json` (source STEP, up-axis, `rotate_deg` so the user-facing side is +Z,
+`transparent` parts, material rules `[regex, preset, colour?]`, optional `lods` overrides).
+
+**Fidelity rules (Ansh: "keep them detailed, no visual defects")** — nothing is ever decimated or simplified:
+1. *Tessellation* is exact CAD at a max surface error: **detail 0.02 mm / 20°**, **mat 0.1 mm / 30°** (LOD for the
+   landing mat, where the model is a few hundred px). Small models (IMU) override mat → detail tolerances.
+2. *Exact duplicates* (same part exported twice in place) are removed — they z-fight.
+3. *Z-fighting* between different parts (CAD interference, flush stickers/labels) is detected (`zfight.py`) and the
+   smaller part wins: nudged 0.02 mm out along the shared plane, or grown 0.02 mm (inside the tessellation error).
+4. *Never-visible parts* are removed via a 162-direction ID render (see-through parts never occlude).
+5. *Join per material* → draw calls ≈ number of materials (~10 per model).
+6. *Compression*: dedup (**not materials** — names carry presets), weld (bit-exact), prune, meshopt with
+   **16-bit positions + 16-bit normals** passed *to meshopt itself* (it re-quantizes at 14/10 bits otherwise).
+7. *QA gate*: render uncompressed vs shipped in the real three.js scene from 3 fixed cameras; PASS < 0.1 % pixels
+   changed by > 8/255. Noise floor measured at 0.000 % (renderer is deterministic). Comparisons are saved to
+   `docs/portfolio/reference/models/*-compare.png`.
+
+Materials: STEP from Creo/Fusion carried **no colours**, so presets come from the config (`preset#hex` material
+names, mapped by `Model.tsx`). Fusion **mesh bodies are dropped by STEP export** (IMU PCB pads, 0402s, VL53L1X, JST
+are missing) — convert Mesh→BRep in Fusion before exporting. Audit script used: compare cascadio's "skipped node
+without geometry" warnings.
+
+Results (2026-10-22):
+
+| Model | detail (tris / MB) | mat (tris / MB) | QA detail | notes |
+|---|---|---|---|---|
+| steering-wheel | 601k / 5.2 | 254k / 2.9 | 0.036 % ✅ | 26 hidden parts, 1 duplicate knob; faces +Z = driver side |
+| 3d-printer | 2.26M / 16.0 | 1.16M / 9.0 | 0.052 % ✅ | 33 duplicates, 32 z-fights fixed (mount corner, stickers, label) |
+| imu-wearable | 30k / 0.23 | = detail | 0.001 % ✅ | closed enclosure hides the PCB; STEP missing mesh-body parts |
+
+Mat LOD QA at mat size: views 0/1 ≤ 0.17 %; the 2.4× close-up shows ≤ 0.73 % (highlight edges on small cylinders).
+**Decision (Ansh, 2026-10-22): the landing mat loads the mat LOD only**; detail is for project pages + pinned showcase.
+
+The subsections below are the original manual (Fusion → Blender) guidance — still valid for FBX/OBJ sources and
+hand-made scenes, but the per-step settings above take precedence for STEP models.
+
+
 ```
 Fusion 360 ──export──▶ Blender ──cleanup/materials──▶ GLB ──gltf-transform──▶ public/models/<slug>/*.glb
 ```
@@ -109,10 +156,13 @@ All `MeshPhysicalMaterial` unless noted. Values are starting points — tune per
 | `alu_extrusion_black` (2020 T-slot) | `#151515` | 1 | 0.35–0.45 | slight `anisotropy .3` along extrusion axis |
 | `alu_machined` (CNC standoffs, heat spreader) | `#c8c8c8` | 1 | 0.2–0.3 | `anisotropy .6` + circular/linear brushed normal |
 | `steel_polished` (rods, lead screw) | `#d6d6d6` | 1 | 0.12–0.2 | — |
+| `steel_black_oxide` (McMaster black-oxide screws) | `#2b2b2d` | 1 | 0.38 | — |
+| `steel_zinc` (zinc-plated hardware) | `#c4c6c2` | 1 | 0.3 | — |
 | `brass` (lead-screw nut, inserts) | `#c9a14a` | 1 | 0.25 | — |
 | `carbon_fiber` (baseplate) | `#111` | 0 | 0.35 base | **twill weave normal + roughness map**, `clearcoat 1, clearcoatRoughness .05`, `anisotropy .5` rotated per weave |
 | `rubber_silicone` (grips, damper) | from model | 0 | 0.7 | `sheen .5, sheenRoughness .8, sheenColor` slightly lighter |
 | `pcb_soldermask` | `#0d3b1e` / black | 0 | 0.35 | `clearcoat .6`; separate `pcb_gold` (metal 1, rough .25, `#d4a64a`), `pcb_silkscreen` via texture |
+| `polycarbonate_clear` (small windows) | `#dfe7ea` | 0 | 0.04 | `transparent, opacity .28, clearcoat 1, depthWrite false` — no transmission pass |
 | `acrylic_clear` | `#ffffff` | 0 | 0.05 | `transmission 1, thickness .5, ior 1.49` — **sparingly** (extra render pass) |
 | `screen_glass` (TapCarry monitor) | black | 0 | 0.05 | screen = `MeshBasicMaterial` with `VideoTexture` (toneMapped: false) + thin glass layer `clearcoat 1` for reflections |
 | `cork` / `wood` (bench props) | texture | 0 | 0.8 | albedo + normal from Poly Haven (1k) |
@@ -143,8 +193,8 @@ Disable multisampling on the canvas when SMAA is used. Drop AO and bloom at low 
 | Item | Budget |
 |---|---|
 | Landing initial JS (excluding three chunk) | ≤ 200 kB gz |
-| Landing 3D payload before interaction | ≤ 4 MB (all trinkets + HDRI) |
-| Each trinket GLB | ≤ 1.5 MB (aim 300–800 kB) |
+| Landing 3D payload before interaction | poster/LCP first; models stream after (mat LODs ≈ 12 MB total, sequential) |
+| Each trinket GLB | fidelity first (Ansh): mat LOD as small as the QA gate allows — currently 0.2–9 MB, streamed one at a time after the poster |
 | Project hero assembly GLB | ≤ 6 MB, lazy-loaded |
 | HDRI | 1k `.hdr` ≤ 1.5 MB, or Lightformers (0 kB) |
 | Textures | ≤ 2048², WebP/KTX2 |

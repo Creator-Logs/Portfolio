@@ -7,8 +7,8 @@ import { getMaterial, isPreset, type Preset } from "./materials";
 
 // Loads a meshopt-compressed GLB (3D_GUIDE §1.3) and maps materials to presets.
 // - `materials`: { pattern: preset | [preset, colour] } matched (case-insensitive) against mesh *or*
-//   material names. Otherwise a Blender material named exactly after a preset (e.g. "alu_machined")
-//   uses that preset with its own colour; anything else keeps the GLB's material.
+//   material names. Otherwise a material named "preset" or "preset#rrggbb" (what scripts/models/process.py
+//   writes) uses that preset (and colour); anything else keeps the GLB's material.
 // - Raycasting is off by default: interact through a hit proxy (3D_GUIDE §7b rule 14).
 
 type MaterialMap = Record<string, Preset | [Preset, THREE.ColorRepresentation]>;
@@ -36,9 +36,9 @@ export function Model({ src, materials, raycastable = false, castShadow = false,
       const current = mesh.material as THREE.Material;
       const rule = rules.find((r) => r.re.test(mesh.name) || r.re.test(current?.name ?? ""));
       if (rule) mesh.material = rule.mat;
-      else if (current?.name && isPreset(current.name)) {
-        const color = (current as THREE.MeshStandardMaterial).color;
-        mesh.material = getMaterial(current.name, color);
+      else if (current?.name) {
+        const [preset, hex] = current.name.split("#");
+        if (isPreset(preset)) mesh.material = getMaterial(preset, hex ? `#${hex}` : undefined);
       }
       mesh.castShadow = castShadow;
       if (!raycastable) mesh.raycast = () => {};

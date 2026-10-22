@@ -22,11 +22,15 @@ type Softbox = {
 };
 
 const rigs: Record<StudioPreset, Softbox[]> = {
+  // Tuned on the steering wheel (mostly black SLS / carbon / black-oxide): dark surfaces only read
+  // through large, bright reflections, so the softboxes are big; warmth is kept off metals' underside.
   "dark-studio": [
-    { color: "#FFD9B0", intensity: 3, position: [-3, 4, 3], scale: [4, 3] }, // key: warm, above-front-left
-    { color: "#F2F0EC", intensity: 4, position: [4, 2, -4], scale: [0.6, 6] }, // rim strip, behind-right
-    { color: "#FFB98A", intensity: 0.4, position: [4, 1, 4], scale: [3, 3] }, // fill: low, warm, front-right
-    { color: "#382416", intensity: 0.8, position: [0, -3, 0], scale: [10, 10], rotation: [-Math.PI / 2, 0, 0] }, // ground bounce
+    { color: "#FFE2C4", intensity: 6, position: [-3, 5, 3], scale: [6, 4] }, // key: warm, large, above-front-left
+    { color: "#FFFFFF", intensity: 7, position: [4.5, 2, -4], scale: [1, 8] }, // rim strip, behind-right
+    { color: "#F4EEE8", intensity: 3, position: [-5, 2, -3], scale: [0.8, 6] }, // second rim, behind-left
+    { color: "#FFF1E4", intensity: 1.2, position: [4, 1, 4], scale: [5, 4] }, // fill: soft, front-right
+    { color: "#FFFFFF", intensity: 0.7, position: [0, 7, 0], scale: [12, 12], rotation: [Math.PI / 2, 0, 0] }, // overhead dome
+    { color: "#2A2018", intensity: 0.4, position: [0, -3, 0], scale: [10, 10], rotation: [-Math.PI / 2, 0, 0] }, // ground bounce
   ],
   "light-studio": [
     { color: "#ffffff", intensity: 2.5, position: [0, 6, 0], scale: [10, 10], rotation: [Math.PI / 2, 0, 0] },

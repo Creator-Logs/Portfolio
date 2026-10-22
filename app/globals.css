@@ -165,3 +165,9 @@
   .grain { animation: none; }
   html { scroll-behavior: auto; }
 }
+
+/* Dev QA pages (/dev/*): hide chrome that would make screenshots non-deterministic. */
+.qa header,
+.qa .grain {
+  display: none;
+}

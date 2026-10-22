@@ -11,12 +11,15 @@ export type Preset =
   | "alu_extrusion_black"
   | "alu_machined"
   | "steel_polished"
+  | "steel_black_oxide"
+  | "steel_zinc"
   | "brass"
   | "carbon_fiber"
   | "rubber_silicone"
   | "pcb_soldermask"
   | "pcb_gold"
   | "acrylic_clear"
+  | "polycarbonate_clear"
   | "screen_glass";
 
 type Params = THREE.MeshPhysicalMaterialParameters;
@@ -28,12 +31,16 @@ const presets: Record<Preset, Params> = {
   alu_extrusion_black: { color: "#151515", metalness: 1, roughness: 0.4, anisotropy: 0.3 },
   alu_machined: { color: "#c8c8c8", metalness: 1, roughness: 0.25, anisotropy: 0.6 },
   steel_polished: { color: "#d6d6d6", metalness: 1, roughness: 0.15 },
+  steel_black_oxide: { color: "#2b2b2d", metalness: 1, roughness: 0.38 },
+  steel_zinc: { color: "#c4c6c2", metalness: 1, roughness: 0.3 },
   brass: { color: "#c9a14a", metalness: 1, roughness: 0.25 },
   carbon_fiber: { color: "#111111", metalness: 0, roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.05, anisotropy: 0.5 },
   rubber_silicone: { metalness: 0, roughness: 0.7, sheen: 0.5, sheenRoughness: 0.8 },
   pcb_soldermask: { color: "#0d3b1e", metalness: 0, roughness: 0.35, clearcoat: 0.6 },
   pcb_gold: { color: "#d4a64a", metalness: 1, roughness: 0.25 },
   acrylic_clear: { color: "#ffffff", metalness: 0, roughness: 0.05, transmission: 1, thickness: 0.5, ior: 1.49 },
+  // Cheap see-through (no transmission pass): small windows on trinkets.
+  polycarbonate_clear: { color: "#dfe7ea", metalness: 0, roughness: 0.04, transparent: true, opacity: 0.28, clearcoat: 1, depthWrite: false },
   screen_glass: { color: "#000000", metalness: 0, roughness: 0.05, clearcoat: 1 },
 };
 

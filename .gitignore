@@ -33,3 +33,9 @@ assets-src/
 # Build artifacts / personal source docs (contain contact details)
 *.tsbuildinfo
 Ansh_Gupta_*Resume*.pdf
+
+# Model pipeline virtualenv
+.venv-models/
+
+# Uncompressed reference GLBs for the dev QA page
+public/models-qa/

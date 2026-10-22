@@ -1,0 +1,20 @@
+{
+  "_doc": "Config for scripts/models/process.py. Material patterns are case-insensitive regexes on part names; first match wins. rotate_deg (Blender axes) turns the user-facing side to +Z (glTF front). Colours are defaults pending Ansh's confirmation.",
+  "source": "assets-src/trinkets/Steering_Wheel.step",
+  "up": "z",
+  "transparent": "POLYCARB",
+  "rotate_deg": [0, 0, 180],
+  "materials": [
+    ["^BASE_PLATE", "carbon_fiber"],
+    ["SW_ENCLOSURE|FRONT_PANEL_LEFT|DRIVER_GRIPS|FAKE_THUMB", "sls_nylon", "#2a2a2a"],
+    ["STANDOFF|LIFELINE_QD", "alu_machined"],
+    ["91251A|90044A|91864A|BLACK.?OXIDE", "steel_black_oxide"],
+    ["LOCKNUT|90715A|LOCK_NUT|^NAS", "steel_polished"],
+    ["ZINC", "steel_zinc"],
+    ["94459A|HEAT.?SET", "brass"],
+    ["ORING|O-RING|2418T|GASKET", "rubber_silicone", "#141414"],
+    ["POLYCARB", "polycarbonate_clear"],
+    ["ROT_ENCODER|DIAL|KNOB", "pla_matte", "#1a1a1a"],
+    [".*", "pla_matte", "#333333"]
+  ]
+}
