@@ -274,7 +274,8 @@ scroll frame (drei View has to re-align), so its per-frame GPU cost competes wit
     ratio > 0). drei's own check treats an element touching the viewport edge as visible — measured: the pinned
     showcase below the hero added 600k invisible triangles to every hero frame.
 24. **Below-the-fold scenes**: `SceneBlock loadMargin="100% 0px"` (download a screen ahead) + `gl.compileAsync(scene,
-    camera)` on mount (parallel shader compile). First-visible-frame hitch went 550-770 ms -> ~60 ms.
+    camera)` on mount (parallel shader compile), then one idle render into a 1×1 target to force GPU uploads —
+    `components/three/useWarmup.ts`. First-visible-frame hitch went 550-770 ms -> ~60 ms -> 0 (prod, 1.5× DPR).
 25. Effects that measure/centre models must be idempotent (reset the transform first): dev double-invoke /
     remounts otherwise measure an already-shifted group (the showcase wheel ended up 76 mm off-centre).
 

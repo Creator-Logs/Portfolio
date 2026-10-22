@@ -1,11 +1,12 @@
 "use client";
 
 import { PerspectiveCamera } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { useLayoutEffect, useRef } from "react";
 import * as THREE from "three";
 import { Model } from "@/components/three/Model";
 import { StudioEnvironment } from "@/components/three/StudioEnvironment";
+import { useWarmup } from "@/components/three/useWarmup";
 import type { Progress } from "@/hooks/useScrollProgress";
 
 // Pinned showcase (landing.md §2): the steering wheel (detail LOD) sits centred and turns ~200° with
@@ -22,13 +23,8 @@ export default function ShowcaseScene({ progress, mobile }: { progress: Progress
   const radius = useRef(0.15);
   const lastAspect = useRef(0);
 
-  // Pre-compile shaders in the background while the section is still a screen away (it mounts early via
-  // SceneBlock loadMargin), so the first visible frame doesn't stall on ANGLE/D3D shader compiles.
-  const gl = useThree((st) => st.gl);
-  const scene = useThree((st) => st.scene);
-  useEffect(() => {
-    if (camera.current) gl.compileAsync(scene, camera.current).catch(() => {});
-  }, [gl, scene]);
+  // compile + upload while still a screen away (SceneBlock loadMargin), not on the first visible frame
+  useWarmup(camera);
 
   // pivot through the model's centre (GLBs rest on y = 0)
   useLayoutEffect(() => {

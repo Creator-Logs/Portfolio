@@ -136,7 +136,7 @@ the software too** — and they should want to play with the page. The trinkets 
 - [x] Show GPA on the landing page? Answer: **no GPA** (2026-10-22).
 - [ ] Include the Illini EV telemetry role in the experience list even though the project is out of scope? Answer:
 - [ ] Résumé download — engineering or software version (or both)? Answer:
-- [ ] Bench/skills section: full 3D or 2D tiles? Answer:
+- [x] Bench/skills section: full 3D or 2D tiles? Answer: **2D tiles with tilt** on a CSS cutting mat (2026-10-22).
 - [ ] Any sections you'd add/remove? Answer:
 
 ## Done when
@@ -175,4 +175,6 @@ Phase 8 (selected works, 2026-10-22):
   TapCarry uses its hero screenshot); desktop hover-intent (250 ms rest, no scroll) mounts the live spinning model.
 - Gimbal + Garage have no media yet ("Media coming soon" tiles) — ask Ansh in those project sessions.
 - Known, for Phase 11: ~2 s main-thread freeze during first load while the 9 MB printer mat GLB uploads.
+Phase 9 (bench, 2026-10-22): `content/skills.ts`; "Used in" links only where the resume ties a skill to a project
+(TypeScript/SQL have none; Raspberry Pi/CAN note the out-of-scope Illini EV telemetry; DFM/injection molding = coursework).
 - Note for the printer session: the v1 printer page overflows horizontally at 375px (see `reference/printer-v1-mobile.png`).

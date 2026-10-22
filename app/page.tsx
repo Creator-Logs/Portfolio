@@ -5,11 +5,11 @@ import { HeroScene } from "@/components/landing/HeroScene";
 import { ScrollCue } from "@/components/ui/ScrollCue";
 import { Showcase } from "@/components/landing/Showcase";
 import { SelectedWorks } from "@/components/landing/SelectedWorks";
+import { Bench } from "@/components/landing/Bench";
 
 // Phase 1 shell: every landing section exists with its anchor and final typography,
 // and gets its real content/3D in the phase noted in each placeholder.
 const placeholders = [
-  { id: "bench", eyebrow: "Everything on the bench · Phase 9", lines: ["The toolchain"] },
   { id: "experience", eyebrow: "Experience · Phase 10", lines: ["Where I build"] },
 ];
 
@@ -50,6 +50,7 @@ export default function Home() {
       <Showcase />
 
       <SelectedWorks />
+      <Bench />
 
       {placeholders.map((s) => (
         <PlaceholderSection key={s.id} {...s} />

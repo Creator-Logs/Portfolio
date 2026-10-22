@@ -10,7 +10,6 @@ import { SpecLine } from "@/components/ui/SpecLine";
 import { ToolChips } from "@/components/ui/ToolChips";
 import { projects, type Project } from "@/content/projects";
 import { trinkets } from "@/content/trinkets";
-import { useInView } from "@/hooks/useInView";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 
@@ -28,7 +27,7 @@ export function SelectedWorks() {
   const [current, setCurrent] = useState(0);
   const [hovered, setHovered] = useState<string | null>(null);
   const mobile = useIsMobile();
-  const inView = useInView(section, "0px");
+  const [inView, setInView] = useState(false);
   const lastScroll = useRef(0);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -37,6 +36,16 @@ export function SelectedWorks() {
     useCallback((p: number) => {
       lastScroll.current = performance.now();
       if (line.current) line.current.style.width = `${p * 100}%`;
+      // Counter shows while the list covers mid-screen; current row = the one under mid-screen.
+      // (Computed here, not with IntersectionObserver, so jumps/anchor links can't leave it stale.)
+      const mid = window.innerHeight / 2;
+      const r = section.current!.getBoundingClientRect();
+      setInView(r.top < mid && r.bottom > mid);
+      const i = rows.current.findIndex((row) => {
+        const b = row?.getBoundingClientRect();
+        return b && b.top <= mid && b.bottom > mid;
+      });
+      if (i >= 0) setCurrent(i);
     }, []),
   );
 
@@ -54,17 +63,6 @@ export function SelectedWorks() {
   };
   useEffect(() => () => clearTimeout(hoverTimer.current), []);
 
-  // current row = the one crossing the middle band of the viewport (state changes only between rows)
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) if (e.isIntersecting) setCurrent(Number((e.target as HTMLElement).dataset.index));
-      },
-      { rootMargin: "-45% 0px -45% 0px" },
-    );
-    rows.current.forEach((r) => r && io.observe(r));
-    return () => io.disconnect();
-  }, []);
 
   return (
     <section id="work" ref={section} className="px-page py-24 md:py-32" aria-labelledby="work-heading">
@@ -79,7 +77,6 @@ export function SelectedWorks() {
             ref={(el) => {
               rows.current[i] = el;
             }}
-            data-index={i}
             className="rule-dotted"
           >
             <Link
