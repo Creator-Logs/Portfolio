@@ -8,14 +8,16 @@ import { SceneContext } from "./sceneContext";
 type Props = {
   children: React.ReactNode;
   active: boolean;
+  /** Strictly on screen; drei skips rendering the View entirely when false. */
+  visible: boolean;
   animate: boolean;
   onReady: () => void;
   onError: () => void;
 };
 
-export default function SceneView({ children, active, animate, onReady, onError }: Props) {
+export default function SceneView({ children, active, visible, animate, onReady, onError }: Props) {
   return (
-    <View className="absolute inset-0">
+    <View className="absolute inset-0" visible={visible}>
       <SceneContext.Provider value={{ active }}>
         <SceneErrorBoundary onError={onError}>
           <Suspense fallback={null}>

@@ -270,6 +270,14 @@ scroll frame (drei View has to re-align), so its per-frame GPU cost competes wit
 22. How to test: `scripts`-style Playwright run in **headed** Chrome (`headless: false`) with `mouse.wheel`, at
     deviceScaleFactor 1, 1.5 and 2; count rAF gaps > 150 ms. Headless shows ~2 s artefact gaps even when headed is clean.
 
+23. **A View draws only when strictly on screen** (`SceneBlock` passes `visible` from an IntersectionObserver with
+    ratio > 0). drei's own check treats an element touching the viewport edge as visible — measured: the pinned
+    showcase below the hero added 600k invisible triangles to every hero frame.
+24. **Below-the-fold scenes**: `SceneBlock loadMargin="100% 0px"` (download a screen ahead) + `gl.compileAsync(scene,
+    camera)` on mount (parallel shader compile). First-visible-frame hitch went 550-770 ms -> ~60 ms.
+25. Effects that measure/centre models must be idempotent (reset the transform first): dev double-invoke /
+    remounts otherwise measure an already-shifted group (the showcase wheel ended up 76 mm off-centre).
+
 **Lazy 3D content**: create `React.lazy` scene components inside a *client* module that renders the `SceneBlock`
 (e.g. `components/landing/HeroScene.tsx`). Passing a lazy export through a Server Component double-wraps it and crashes.
 

@@ -141,7 +141,7 @@ the software too** — and they should want to play with the page. The trinkets 
 - [ ] Should clicking a trinket route to its project, or open a quick-look popover first? Answer:
 - [x] Blueprint intro on every visit, or first visit only (sessionStorage)? Answer: first chose first-visit-only, then **cut it entirely** after seeing it (2026-10-22).
 - [ ] Monitor style: procedural generic, or a specific model? Answer:
-- [ ] Show GPA on the landing page? Answer:
+- [x] Show GPA on the landing page? Answer: **no GPA** (2026-10-22).
 - [ ] Include the Illini EV telemetry role in the experience list even though the project is out of scope? Answer:
 - [ ] Résumé download — engineering or software version (or both)? Answer:
 - [ ] Bench/skills section: full 3D or 2D tiles? Answer:
@@ -175,4 +175,7 @@ Phase 3 (models, 2026-10-22):
 - Hero mat loads the **mat LOD only** (exact CAD at 0.1 mm); full detail is for project pages + the pinned showcase.
 - IMU: use the STEP **as-is** for now (missing Fusion mesh-body parts); it renders as a closed enclosure from outside.
 - Materials/colours: **render with defaults now; tune lighting + materials together later**.
+Phase 6 (pinned showcase, 2026-10-22):
+- Heading: **DESIGNED. / MACHINED. / CODED.** (last line orange). Paragraph without GPA.
+- Built with CSS sticky (not a GSAP pin), detail wheel LOD loaded a screen ahead, renders only on scroll.
 - Note for the printer session: the v1 printer page overflows horizontally at 375px (see `reference/printer-v1-mobile.png`).

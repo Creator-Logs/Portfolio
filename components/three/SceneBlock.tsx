@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PosterFallback } from "@/components/ui/PosterFallback";
 import { useInView } from "@/hooks/useInView";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -24,9 +24,12 @@ type Props = {
   animate?: boolean;
   priority?: boolean;
   className?: string;
+  /** Defer loading the 3D (and its models) until the block is within this margin of the viewport,
+   *  e.g. "100% 0px" = one screen ahead. Omit to load immediately (above-the-fold blocks). */
+  loadMargin?: string;
 };
 
-export function SceneBlock({ children, poster, posterAlt, animate = false, priority, className = "" }: Props) {
+export function SceneBlock({ children, poster, posterAlt, animate = false, priority, className = "", loadMargin }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref);
   const reducedMotion = useReducedMotion();
@@ -35,15 +38,21 @@ export function SceneBlock({ children, poster, posterAlt, animate = false, prior
   const [failed, setFailed] = useState(false);
   const onReady = useCallback(() => setReady(true), []);
   const onError = useCallback(() => setFailed(true), []);
+  const near = useInView(ref, loadMargin ?? "0px");
+  const onScreen = useInView(ref, "0px"); // strictly visible: only then does the View draw at all
+  const [armed, setArmed] = useState(!loadMargin);
+  useEffect(() => {
+    if (near) setArmed(true); // latches: once loaded, stays mounted
+  }, [near]);
 
-  const show3D = webgl === "ok" && !reducedMotion && !failed;
+  const show3D = webgl === "ok" && !reducedMotion && !failed && armed;
   const active = show3D && inView;
 
   return (
     <div ref={ref} className={`relative ${className}`}>
       <PosterFallback src={poster} alt={posterAlt} visible={!show3D || !ready || contextLost} priority={priority} />
       {show3D && (
-        <SceneView active={active} animate={animate} onReady={onReady} onError={onError}>
+        <SceneView active={active} visible={onScreen} animate={animate} onReady={onReady} onError={onError}>
           {children}
         </SceneView>
       )}

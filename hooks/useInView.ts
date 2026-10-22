@@ -9,7 +9,12 @@ export function useInView(ref: RefObject<Element | null>, margin = "100px") {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: margin });
+    // ratio > 0: an element merely touching the viewport edge is not "in view" (it would otherwise be
+    // rendered every frame while invisible — measured: +600k triangles per hero frame).
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting && entry.intersectionRatio > 0), {
+      rootMargin: margin,
+      threshold: [0, 0.001],
+    });
     io.observe(el);
     return () => io.disconnect();
   }, [ref, margin]);

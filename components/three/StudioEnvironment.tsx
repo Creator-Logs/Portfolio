@@ -68,7 +68,16 @@ function bake(gl: THREE.WebGLRenderer, preset: StudioPreset) {
   return target.texture; // kept for the app's lifetime (one per preset)
 }
 
-export function StudioEnvironment({ preset = "dark-studio", rotation = 0 }: { preset?: StudioPreset; rotation?: number }) {
+export function StudioEnvironment({
+  preset = "dark-studio",
+  rotation = 0,
+  intensity = 1,
+}: {
+  preset?: StudioPreset;
+  rotation?: number;
+  /** Multiplier on the global tuning value (e.g. brighter for a single hero object). */
+  intensity?: number;
+}) {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
   const invalidate = useThree((s) => s.invalidate);
@@ -80,13 +89,13 @@ export function StudioEnvironment({ preset = "dark-studio", rotation = 0 }: { pr
       baked.set(preset, texture);
     }
     scene.environment = texture;
-    scene.environmentIntensity = tuning.envIntensity;
+    scene.environmentIntensity = tuning.envIntensity * intensity;
     scene.environmentRotation.set(0, rotation, 0);
     invalidate();
     return () => {
       scene.environment = null;
     };
-  }, [gl, scene, preset, rotation, invalidate]);
+  }, [gl, scene, preset, rotation, intensity, invalidate]);
 
   return null;
 }

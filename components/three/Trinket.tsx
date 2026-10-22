@@ -50,6 +50,7 @@ export function Trinket(props: Props) {
     });
     s.rotation.set(...(rotation.map(THREE.MathUtils.degToRad) as [number, number, number]), "XYZ");
     s.scale.setScalar(1);
+    s.position.set(0, 0, 0); // idempotent if the effect runs twice (dev double-invoke / remount)
     outer.current!.updateMatrixWorld(true); // not rendered yet, so matrices are stale
     // Fit: rotated bounds in the trinket's own frame.
     const bounds = new THREE.Box3().setFromObject(content);
