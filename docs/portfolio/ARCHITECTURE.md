@@ -98,7 +98,7 @@ type Project = {
   category: 'mechanical' | 'electronics' | 'software';
   period: string;           // e.g. "Summer 2025"
   tools: { name: string; logo: string }[];   // logos in /public/logos
-  specLine: string;         // mono caps line, e.g. "CORE-XY · 220 × 220 × 180 MM · FUSION 360"
+  specLine: string;         // mono caps line, e.g. "CORE-XY · 200 × 185 × 160 MM · FUSION 360"
   poster: string;           // webp
   trinket?: string;         // glb used on the landing hero, if any
   status?: 'in-progress';

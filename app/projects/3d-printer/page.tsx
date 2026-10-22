@@ -19,7 +19,7 @@ const clash = localFont({
 
 export const metadata: Metadata = {
   title: "3D Printer — Ansh Gupta",
-  description: "A Core-XY 3D printer designed and built from scratch: 220 × 220 × 180 mm build volume, under $200.",
+  description: "A Core-XY 3D printer designed and built from scratch: 200 × 185 × 160 mm build volume, under $200.",
 };
 
 export default function PrinterPage() {

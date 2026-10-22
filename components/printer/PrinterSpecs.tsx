@@ -9,9 +9,9 @@ const specs = [
   { label: "Voltage & Power", value: "24 V / 350 W" },
 ];
 
-// Build volume per the engineering résumé (Ansh, 2026-10-22); v1 said 200 × 185 × 160.
+// Build volume as on v1 (Ansh, 2026-10-22; résumé being corrected to match).
 const tables = [
-  { title: "Build Volume", rows: [["Width", "220 mm"], ["Depth", "220 mm"], ["Height", "180 mm"]] },
+  { title: "Build Volume", rows: [["Width", "200 mm"], ["Depth", "185 mm"], ["Height", "160 mm"]] },
   { title: "Physical Dimensions", rows: [["Width", "389 mm"], ["Depth", "410 mm"], ["Height", "409 mm"]] },
 ];
 

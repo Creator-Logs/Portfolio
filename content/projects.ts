@@ -46,7 +46,7 @@ const list: Project[] = [
     category: "mechanical",
     period: "Summer 2025",
     tools: [{ name: "Fusion 360", logo: "/logos/Fusion360.svg" }, { name: "Blender", logo: "/logos/Blender.svg" }],
-    specLine: "Core-XY · 220 × 220 × 180 mm · Fusion 360",
+    specLine: "Core-XY · 200 × 185 × 160 mm · Fusion 360",
     poster: "/project_media/3d-printer/render.webp",
   },
   {

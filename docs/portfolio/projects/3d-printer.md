@@ -76,7 +76,7 @@ Font: Clash Grotesk (variable). Content max width 1440px, centered.
 
 - **Right column** (`mix-blend-multiply`, centered): image **`/project_media/3d_printer/printer_isometric.webp`**
   (alt "3d_printer_isometric", 600×610, priority). Below it, two side-by-side tables (128px gap):
-  - **Build Volume** (label 20px `#BFBFBF`): Width **200 mm**, Depth **185 mm**, Height **160 mm** ⚠ see conflict
+  - **Build Volume** (label 20px `#BFBFBF`): Width **200 mm**, Depth **185 mm**, Height **160 mm** (confirmed)
   - **Physical Dimensions**: Width **389 mm**, Depth **410 mm**, Height **409 mm**
   - Table text 20px medium `#1D1D1F`, label column + value column with 16px gap.
 
@@ -137,7 +137,7 @@ Font: Clash Grotesk (variable). Content max width 1440px, centered.
 - [ ] Print speed / quality results, cost breakdown
 
 ## Questions for Ansh
-- [x] Build volume: page says **200 × 185 × 160 mm**, engineering résumé says **220 × 220 × 180 mm** — which is correct? Answer: **220 × 220 × 180 mm** (résumé). Specs table updated.
+- [x] Build volume: page says **200 × 185 × 160 mm**, engineering résumé says **220 × 220 × 180 mm** — which is correct? Answer: **200 × 185 × 160 mm** (v1 page is correct; Ansh is updating the résumé).
 - [x] Old `constants.tsx` also said "200x200x180 mm build volume" and "Klipper Firmware" — mention Klipper anywhere? Answer: **No.**
 - [x] CAD tile label "Print Frame" → keep, or change to "Printer Frame"? Answer: **"Printer Frame".**
 - [x] Hero "Tools Used" — add machining tools (lathe, CNC, sheet metal) or keep Fusion 360 + Blender only? Answer: Fusion 360 + Blender only (not raised; kept v1).

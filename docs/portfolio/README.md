@@ -58,7 +58,7 @@ between those sessions.
 |---|---|---|
 | Foundation (in landing session) | ✅ done | Stack, tokens, shared 3D layer, runtime rules (3D_GUIDE §7b), STEP→GLB pipeline (§1.0) |
 | Landing | ✅ done | Hero mat, steering-wheel showcase, selected works, bench, contact. Cut by Ansh: blueprint intro, TapCarry section, experience. Visuals pass 2026-10-22: baked AO + shader detail, Cycles product renders, HD posters, portrait. |
-| 3D Printer | ✅ done | Faithful v1 port + mobile stacking, light nav, build volume 220 × 220 × 180, Core-XY SVG demo, Manufacturing rows (text; photos pending). |
+| 3D Printer | ✅ done | Faithful v1 port + mobile stacking, light nav, build volume 200 × 185 × 160 (v1), Core-XY SVG demo, Manufacturing rows (text; photos pending). |
 | FSAE Steering Wheel | ☐ not started | |
 | IMU Jump-Height Wearable | ☐ not started | |
 | Bike Camera Gimbal | ☐ not started | |
