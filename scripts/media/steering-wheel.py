@@ -32,7 +32,6 @@ PHOTOS = {  # output name: (source, max long edge, webp quality, rotate deg CCW,
     "plate-grips": ("IMG_9298.HEIC", 2560, 85, 90, (0.06, 0.0, 0.98, 0.92)),
     "on-car": ("IMG_9606.JPG", 2560, 85, 0, None),
     "pcb-sandwich": ("16CBD5D0-B947-48A8-9768-85224D86AF05.jpg", 2560, 85, 0, None),
-    "lug-calcs": ("Screenshot 2026-10-22 200924.png", 2560, 92, 0, None),  # handwriting: keep it crisp
 }
 
 # output name: (source, crop as fractions (x0, y0, x1, y1) of the 4:3 frame, H.264 CRF, VP9 CRF, trim (start, s) or None)

@@ -113,7 +113,7 @@ Inline highlight in body (from Oryzo reviews): key phrase coloured orange, not b
 | **Tool chips** | Rounded-xl square tiles with a tool logo (preserves the printer hero's "Tools Used" pattern). On dark pages: `--ink-2` bg, brown border. |
 | **Grain** | Fixed full-screen noise overlay at ~6% opacity, `mix-blend-mode: overlay`, CSS-animated steps. Use a local noise PNG (not a remote URL). |
 | **Stat** | Huge number (display) + mono label below: `65` / `MERCHANT SIGN-UPS`. |
-| **Loop video** (`ui/LoopVideo`, added 2026-10-22 for the steering wheel) | Inline shop footage: muted, looping, `playsInline`, WebM + MP4 sources, poster = the loop's first frame; plays only while on screen; reduced motion → poster only. Rounded 12px like photos, mono caption below. Not a PIP (that's for reels). |
+| **Loop video** (`ui/LoopVideo`, added 2026-10-22 for the steering wheel) | Inline shop footage: muted, looping, `playsInline`, **MP4 (H.264) source first**, then WebM (iOS may pick WebM and fail to decode it); poster = the loop's first frame; plays only while on screen. If autoplay is refused (Low Power Mode) or reduced motion is on, a small Play pill shows and a tap plays it. Rounded 12px like photos, mono caption below. Not a PIP (that's for reels). |
 | **Figure** (`ui/Figure`) | Photo or loop with a mono caption below (`type-label`, grey-brown) — rounded 12px, never text over the image. |
 | **Next project** (`project/NextProject`) | Page ending: dotted rule, mono `NEXT PROJECT`, display h2 title (links to the project), its spec line, orange pill. |
 

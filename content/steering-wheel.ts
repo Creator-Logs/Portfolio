@@ -55,7 +55,7 @@ export const parts: Part[] = [
     ids: ["hub_bolts"],
     name: "Hub bolts",
     spec: "3 × NAS 6203",
-    note: "Clamp the plate and both standoffs to the hub. This is the joint the lug hand calcs size.",
+    note: "Clamp the plate and both standoffs to the hub.",
   },
   {
     ids: ["grip_left", "grip_right"],
@@ -122,24 +122,9 @@ export const stackUp = {
 export const provingIt = {
   lines: ["Pushed, pulled,", "twisted."],
   body:
-    "I sized the standoffs for steering torque and braking push/pull with free-body diagrams, lug and bolt hand calcs, and Ansys FEA. Hand calcs cover one lug; the whole stack needs FEA.",
+    "I sized the standoffs for steering torque and braking push/pull with free-body diagrams, hand calcs and Ansys FEA: a minimum factor of safety of 3.7 at 180 lbf axial and 600 lbf·in torque.",
   feaIntro:
     "The solved Ansys model, with its real per-node stress: 180 lbf axial and 600 lbf·in torque on the plate, fixed at the quick-disconnect. Drag to turn it.",
-};
-
-/** Ansh's lug hand calc (photo: lug-calcs.webp). Only the inputs live here; LugCalcCard derives every result, so the
- *  card can't drift from them. Note: the sheet writes the net-section area as 0.136 in²; from these inputs it's
- *  (0.326 − 0.191) × 0.797 = 0.108 in² — open question in fsae-steering-wheel.md. */
-export const lugCalc = {
-  torqueLbfIn: 600,
-  boltRadiusIn: 1,
-  bolts: 3,
-  holeDiaIn: 0.191,
-  boltDiaIn: 0.1875,
-  lugThicknessIn: 0.797,
-  lugWidthIn: 0.326,
-  yieldPsi: 66000, // 7075-T6
-  photo: { src: `${MEDIA}/lug-calcs.webp`, w: 1217, h: 824, caption: "The handwritten original" },
 };
 
 export const grips = {

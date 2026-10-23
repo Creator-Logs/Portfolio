@@ -35,7 +35,7 @@ const list: Project[] = [
     category: "mechanical",
     period: "Aug 2025 – Apr 2026",
     tools: [{ name: "PTC Creo", logo: "/logos/Creo.svg" }, { name: "Ansys", logo: "/logos/Ansys.svg" }],
-    specLine: "Carbon-fiber baseplate · SLS enclosure · Min FoS ~3",
+    specLine: "Carbon-fiber baseplate · SLS enclosure · Min FoS 3.7",
     poster: "/project_media/steering-wheel/render.webp",
   },
   {

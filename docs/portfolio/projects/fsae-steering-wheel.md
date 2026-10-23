@@ -103,7 +103,7 @@ No waterjet footage exists → animate the **real cut file** (`IEM/Steering Whee
      lines (the column axis runs across the frame); popover lives in the left column under the list (nothing opaque
      over the canvas). AO mixes `_ao` → `_ao_x` with the explode (`Model aoExplode`, `materials.ts USE_VERTEX_AO_X`).
      Phones: no labels/popover, full list with notes below. Picking = ray vs per-group boxes (no mesh raycasts).
-   - **Calc card** (`LugCalcCard`): all results derived from Ansh's inputs (`content lugCalc`) — see open question.
+   - **Calc card**: built, then removed at Ansh's request (not necessary).
    - **Waterjet** (`WaterjetPath`, data from `scripts/media/dxf_to_svg.py` → `content/steering/waterjet.json`): the real
      cut file (254.0 × 150.3 mm = the base plate), holes first then contours, scroll-drawn with a "jet" dot.
      **Pinned** (Ansh 2026-10-22): 260 svh wrapper (phones 200), sticky block with the title/text + drawing; the cut
@@ -177,14 +177,17 @@ fit the electronics, and feel right in the hands — designed, analysed, and man
       (Plate stress numbers stay hidden — the solve modelled it as a stand-in; its contours are still drawn.)
 - [x] Released-drawings strip? Answer: remove it — doesn't want the drawings on the page (2026-10-22).
 - [x] Grips strip media? Answer: use the other mesh video (C026); rotate the print photo 90° so the whole wheel shows (2026-10-22).
-- [ ] Lug calc sheet: net-section area is written 0.136 in², but (0.326 − 0.191) × 0.797 = 0.108 in² → σ ≈ 1,860 psi,
-      FoS ≈ 35.5 (sheet: 1,470.6 psi, 44.9). Which should the calc card show? (Tear-out 35.6 and bearing 49.2 check out.)
+- [x] Lug calc card? Answer: remove it, not necessary (2026-10-22). (The net-section question is moot; for the record the
+      sheet's 0.136 in² should be 0.108 in².)
+- [x] Loop videos didn't play on Ansh's phone. Fix (2026-10-22): MP4 (H.264) listed before WebM (iOS could pick the VP9
+      WebM and fail without falling back), muted set as a property too, and a tap-to-play button whenever autoplay is
+      refused (Low Power Mode) or reduced motion is on. Verified in WebKit with iPhone emulation.
 - [x] Anything you'd do differently (for the lessons section)? Answer: don't sandwich the electronics with a standoff — make the enclosure carbon (load goes straight through the enclosure) or aluminium. Plastic was chosen to save weight but made electronics integration unnecessarily complex.
 
 ## Done when
 - [x] Exploded view works on scroll + parts have popovers
 - [x] FEA toggle uses real Ansys output (or is clearly marked illustrative)
-- [ ] All numbers match the résumé or Ansh's answers — pending: lug net-section area (calc card) and FoS wording (3.7 vs ≈3)
+- [x] All numbers match the résumé, the Ansys solve or Ansh's answers
 - [x] Mobile + reduced-motion fallbacks; perf budget — one 8.9 MB GLB for hero + stack-up (over the 6 MB guideline, accepted for fidelity)
 - [x] README status + answers recorded
 
@@ -202,6 +205,6 @@ fit the electronics, and feel right in the hands — designed, analysed, and man
 - [x] Baseplate as 4130 (Ansh 2026-10-22): the CF plate was known to be stronger than needed, so the default steel was
   used; the study was about the **standoffs**. **Don't mention the plate's material or numbers** — present it as
   standoff FEA (viewer frames the stack, plate dimmed as context, plate excluded from the results table).
-- [ ] FoS wording: viewer shows the solved 3.7 (standoff 1, yield); résumé says ≈ 3. Not yet confirmed by Ansh.
+- [x] FoS wording: Answer: 3.7 is fine (2026-10-22). Page copy + landing spec line say 3.7.
 - [x] Grips: no SLS photos exist — use the FDM prototype photos (IMG_9298). Grips were printed split in halves.
 - [x] PCB in `16CBD5D0….jpg` = the electrical team's steering wheel board.
