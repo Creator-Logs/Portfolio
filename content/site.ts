@@ -5,7 +5,7 @@ export const site = {
   name: "Ansh Gupta",
   wordmark: "ANSH GUPTA",
   subBrand: "CREATOR LOGS",
-  tagline: "Systems Engineering & Design @ UIUC — I design it, machine it, and code it.",
+  tagline: "Systems Engineering & Design @ UIUC. I design it, machine it, and code it.",
   intro: "Systems Engineering & Design at the University of Illinois Urbana-Champaign.",
   location: "Urbana, IL",
   domain: "creatorlogs.com",

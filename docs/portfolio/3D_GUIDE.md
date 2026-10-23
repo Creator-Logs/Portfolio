@@ -58,6 +58,18 @@ After the AO bake (step 5b, 2026-10-22): steering-wheel 6.9 / 4.1 MB, 3d-printer
 0.55 / 0.55 MB (detail / mat; QA steering-wheel detail 0.006 % ✅). The printer config also `exclude`s one stray
 instance of the 2-64 binding-head screw that sat 62 mm below the bottom tray (it made the printer float).
 
+**Exploded-view variants (2026-10-22, steering wheel):** a config can `extends` another and add
+`groups: [[regex, id, axial_mm, lateral_mm?, side?]]` (+ `explode_axis_from`, + `dir` to share the model's folder):
+`scripts/models/build.sh steering-wheel-parts` → `public/models/steering-wheel/steering-wheel-parts.glb`. Meshes join
+per (group, material) under one node per group; the node's `extras.explode` (glTF metres, → three `userData.explode`)
+is the fully exploded offset along the reference part's normal / long axis. Culling runs **per group in isolation**
+(lossless for any rigid explode, so nothing is culled that an explode can reveal). AO is baked twice: `_AO`
+assembled and `_AO_X` at full explode — the runtime mixes them with the explode amount. Preview:
+`/dev/models?src=…-parts.glb&explode=1`. Runtime: `<Model aoExplode={uniform}>` gives meshes that carry `_ao_x`
+a `USE_VERTEX_AO_X` material variant that mixes the two bakes by the uniform (per Model instance — not per mesh:
+three skips re-uploading material uniforms between consecutive draws that share a material). Result: 689k polys / 8.9 MB (26 parts the assembled build culls are back
+— mostly threaded McMaster screws); QA vs the detail build at explode 0: **0.017 % ✅**, so one GLB serves the whole page.
+
 Mat LOD QA at mat size: views 0/1 ≤ 0.17 %; the 2.4× close-up shows ≤ 0.73 % (highlight edges on small cylinders).
 **Decision (Ansh, 2026-10-22): the landing mat loads the mat LOD only**; detail is for project pages + pinned showcase.
 
@@ -120,8 +132,12 @@ npx @gltf-transform/cli inspect out.glb   # check tris, textures, size
   Bring into Blender for materials (solder mask, gold pads, silkscreen texture).
 - **PTC Creo** (steering wheel): *Save As → STEP*, or OBJ/STL per part → Blender.
 - **3D scans** (grip clay molds): decimate to ≤ 100k tris, bake normal map from the high-poly onto the low-poly.
-- **Ansys FEA results:** export a contour image, or a result file → map as vertex colours/texture on the part in
-  Blender (see steering-wheel page).
+- **Ansys FEA results (what runs, 2026-10-22):** no licence needed. `scripts/fea/build_fea.py <…/SYS/MECH> <out.glb>
+  <summary.json>` reads `file.rst` + `ds.dat` + `MatML.xml` with `ansys-mapdl-reader` and writes one mesh per body
+  (outer FE surface) with custom attributes `_VM` (nodal von Mises, psi) and `_DISP` (displacement, m), plus a JSON
+  of loads / peaks / FoS that the page imports (no hand-typed numbers). Mechanical 2023 R2 writes the displacement
+  record sparse, which the library misreads — the script decodes it (format notes in its docstring). Rendered by
+  `components/steering/feaMaterial.ts` (Mechanical's 9-band legend, load factor + exaggeration as uniforms).
 
 ---
 
@@ -334,6 +350,11 @@ scroll frame (drei View has to re-align), so its per-frame GPU cost competes wit
 29. **Shadows are baked, not per frame**: the hero desk lamp is the only shadow-casting light; its
     `shadow.autoUpdate = false` and `shadow.needsUpdate` is set when a model appears / the layout changes (a 1.4M-triangle
     depth pass every frame would undo rules 19–23). Models cast onto the mat only; self-occlusion is the baked AO.
+
+30. **Demand frames need explicit kicks** (found 2026-10-22, steering-wheel hero blank until scrolled): a scene that
+    doesn't animate on its own must get a frame when it becomes *ready* (`SceneView` → `Ready`), when its View becomes
+    *visible* (`Kick` — drei skips Views that aren't strictly on screen, and the IntersectionObserver flips after mount),
+    and when `useWarmup` has *uploaded* it. All three now call `invalidate()`; interactive scenes invalidate while easing.
 
 **Lazy 3D content**: create `React.lazy` scene components inside a *client* module that renders the `SceneBlock`
 (e.g. `components/landing/HeroScene.tsx`). Passing a lazy export through a Server Component double-wraps it and crashes.

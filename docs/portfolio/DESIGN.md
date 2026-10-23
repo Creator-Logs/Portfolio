@@ -108,11 +108,14 @@ Inline highlight in body (from Oryzo reviews): key phrase coloured orange, not b
 | **Scroll cue** | Circle with chevron + `SCROLL TO CONTINUE` mono, bottom-centre, fades out after first scroll. |
 | **Video PIP** | Rounded 12px card, bottom-right, orange 1px border, thumbnail + `PLAY`; click expands to modal. Use for project reels. |
 | **Glass card** | `backdrop-filter: blur(14px)`, `rgba(255,237,215,.06)` bg, 1px `rgba(255,237,215,.12)` border. |
-| **Part popover** | On clicking a 3D part: small card with part name (display h4), mono spec line, 1–2 sentence note. Anchored via drei `<Html>`. |
+| **Part popover** | On clicking a 3D part: small card with part name (display h4), mono spec line, 1–2 sentence note. Placed in the page's text column next to the part list, **not** over the model (a glass card over the live canvas hazes it — 3D_GUIDE §7b rule 26); the part is marked by its orange label + rim highlight. (Steering wheel, 2026-10-22.) |
 | **Progress counter** | Bottom bar: chapter name left, thin orange progress line, `03 / 10` right (mono). Right-edge dot nav on desktop. |
 | **Tool chips** | Rounded-xl square tiles with a tool logo (preserves the printer hero's "Tools Used" pattern). On dark pages: `--ink-2` bg, brown border. |
 | **Grain** | Fixed full-screen noise overlay at ~6% opacity, `mix-blend-mode: overlay`, CSS-animated steps. Use a local noise PNG (not a remote URL). |
 | **Stat** | Huge number (display) + mono label below: `65` / `MERCHANT SIGN-UPS`. |
+| **Loop video** (`ui/LoopVideo`, added 2026-10-22 for the steering wheel) | Inline shop footage: muted, looping, `playsInline`, WebM + MP4 sources, poster = the loop's first frame; plays only while on screen; reduced motion → poster only. Rounded 12px like photos, mono caption below. Not a PIP (that's for reels). |
+| **Figure** (`ui/Figure`) | Photo or loop with a mono caption below (`type-label`, grey-brown) — rounded 12px, never text over the image. |
+| **Next project** (`project/NextProject`) | Page ending: dotted rule, mono `NEXT PROJECT`, display h2 title (links to the project), its spec line, orange pill. |
 
 ## 6. Motion
 
@@ -143,6 +146,9 @@ Inline highlight in body (from Oryzo reviews): key phrase coloured orange, not b
 - Short headline beats, Oryzo-style: big claim left, explanation right.
 - A little playful in microcopy (scroll cues, hover labels, "tidy up the bench") — but **no fake satire**, all facts real.
 - First person ("I designed…") in body copy; headlines can be impersonal.
+- **No em dashes (—) in any copy** (Ansh, 2026-10-22): use a full stop, comma, colon or parentheses instead.
+  Applies to body text, captions, labels, alt/aria text and page titles (titles use ` · `). En dashes stay in
+  date ranges (`Aug 2025 – Apr 2026`).
 
 ## 9. Responsive
 

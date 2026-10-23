@@ -56,7 +56,7 @@ export function Nav() {
       {/* The hero already carries the big wordmark, so the nav only shows the sub-brand. */}
       <Link
         href="/"
-        aria-label={`${site.name} — home`}
+        aria-label={`${site.name}, home`}
         className={`type-label ${tone} transition-colors hover:text-orange`}
         onClick={() => setOpen(false)}
       >

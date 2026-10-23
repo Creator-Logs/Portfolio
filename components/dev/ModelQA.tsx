@@ -6,7 +6,9 @@ import type { StudioPreset } from "@/components/three/StudioEnvironment";
 
 const ModelQAScene = lazy(() => import("./ModelQAScene"));
 
-export function ModelQA({ src, view, env }: { src: string; view: number; env: StudioPreset }) {
+type Props = { src: string; view: number; env: StudioPreset; explode?: number };
+
+export function ModelQA({ src, view, env, explode }: Props) {
   useEffect(() => {
     document.documentElement.classList.add("qa"); // hides nav + animated grain so screenshots are deterministic
     return () => document.documentElement.classList.remove("qa");
@@ -14,7 +16,7 @@ export function ModelQA({ src, view, env }: { src: string; view: number; env: St
   return (
     <main className="h-svh w-full">
       <SceneBlock posterAlt="" className="h-full w-full">
-        <ModelQAScene src={src} view={view} env={env} />
+        <ModelQAScene src={src} view={view} env={env} explode={explode} />
       </SceneBlock>
     </main>
   );

@@ -119,7 +119,7 @@ function SkillTile({ skill, group, open, tilt, onToggle }: { skill: Skill; group
         <div
           id={cardId}
           role="region"
-          aria-label={`${skill.name} — where I used it`}
+          aria-label={`${skill.name}: where I used it`}
           className="absolute left-0 top-full z-20 mt-2 w-64 rounded-xl border border-brown bg-ink p-4 shadow-[0_12px_30px_rgba(0,0,0,0.5)]"
         >
           <p className="type-h4">{skill.name}</p>

@@ -13,7 +13,7 @@ const ShowcaseScene = lazy(() => import("./ShowcaseScene"));
 
 const HEADING = ["Designed.", "Machined.", "Coded."]; // Ansh, Phase 6
 const PARAGRAPH =
-  "Every part on this page is something I designed in CAD and then made — on a lathe, a CNC mill, a waterjet, a printer, or in code. Systems Engineering & Design at UIUC.";
+  "Every part on this page is something I designed in CAD and then made: on a lathe, a CNC mill, a waterjet, a printer, or in code. Systems Engineering & Design at UIUC.";
 const WORDS = PARAGRAPH.split(" ");
 const REVEAL = [0.12, 0.7]; // progress range over which the words light up (DESIGN.md §6: scrubbed, .15 -> 1)
 

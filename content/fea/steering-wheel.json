@@ -1,0 +1,158 @@
+{
+  "source": "Ansys Mechanical 2023 R2, static structural (SW-FEA.wbpj)",
+  "units": "psi / in (model: metres)",
+  "nodes": 224339,
+  "elements": 113154,
+  "loads": {
+    "forceLbf": 180.0,
+    "momentLbfIn": 600.0,
+    "appliedTo": "Base_plate",
+    "fixed": "QD Profile",
+    "pilot": [
+      0,
+      0,
+      0
+    ],
+    "axis": [
+      0,
+      0,
+      -1
+    ]
+  },
+  "zeroDisplacementNodes": 2327,
+  "vmMinPsi": 0.2,
+  "vmMaxPsi": 17998.9,
+  "maxDispIn": 0.01433,
+  "bodies": [
+    {
+      "name": "Base_plate",
+      "material": "4130",
+      "peakPsi": 12823.9,
+      "peakAt": [
+        0.0243,
+        0.02273,
+        -0.00491
+      ],
+      "yieldPsi": 63100.0,
+      "fosYield": 4.92,
+      "maxDispIn": 0.01433
+    },
+    {
+      "name": "standoff1",
+      "material": "7075 - T6 Aluminium",
+      "peakPsi": 17998.9,
+      "peakAt": [
+        0.01882,
+        0.02373,
+        -0.0109
+      ],
+      "yieldPsi": 66000.0,
+      "fosYield": 3.67,
+      "maxDispIn": 0.00094
+    },
+    {
+      "name": "NAS 1",
+      "material": "NAS 6203",
+      "peakPsi": 16711.9,
+      "peakAt": [
+        0.02752,
+        0.02301,
+        -0.0
+      ],
+      "yieldPsi": 130000.0,
+      "fosYield": 7.78,
+      "maxDispIn": 0.00085
+    },
+    {
+      "name": "standoff 2",
+      "material": "7075 - T6 Aluminium",
+      "peakPsi": 12918.9,
+      "peakAt": [
+        0.01971,
+        0.02424,
+        -0.01229
+      ],
+      "yieldPsi": 66000.0,
+      "fosYield": 5.11,
+      "maxDispIn": 0.00052
+    },
+    {
+      "name": "nut 1",
+      "material": "NAS 6203",
+      "peakPsi": 2432.5,
+      "peakAt": [
+        0.02321,
+        0.02152,
+        -0.03018
+      ],
+      "yieldPsi": 130000.0,
+      "fosYield": 53.44,
+      "maxDispIn": 0.0
+    },
+    {
+      "name": "nut 2",
+      "material": "NAS 6203",
+      "peakPsi": 2049.0,
+      "peakAt": [
+        -0.02033,
+        0.02566,
+        -0.03018
+      ],
+      "yieldPsi": 130000.0,
+      "fosYield": 63.44,
+      "maxDispIn": 0.0
+    },
+    {
+      "name": "nut 3",
+      "material": "NAS 6203",
+      "peakPsi": 3548.6,
+      "peakAt": [
+        0.00226,
+        -0.01397,
+        -0.03018
+      ],
+      "yieldPsi": 130000.0,
+      "fosYield": 36.63,
+      "maxDispIn": 0.0
+    },
+    {
+      "name": "NAS 2",
+      "material": "NAS 6203",
+      "peakPsi": 13785.8,
+      "peakAt": [
+        -0.0274,
+        0.02449,
+        0.0
+      ],
+      "yieldPsi": 130000.0,
+      "fosYield": 9.43,
+      "maxDispIn": 0.00128
+    },
+    {
+      "name": "NAS 3",
+      "material": "NAS 6203",
+      "peakPsi": 17738.1,
+      "peakAt": [
+        -0.00558,
+        -0.01372,
+        -0.0
+      ],
+      "yieldPsi": 130000.0,
+      "fosYield": 7.33,
+      "maxDispIn": 0.00104
+    },
+    {
+      "name": "QD Profile",
+      "material": "7075 - T6 Aluminium",
+      "peakPsi": 3582.5,
+      "peakAt": [
+        0.02131,
+        0.02781,
+        -0.02516
+      ],
+      "yieldPsi": 66000.0,
+      "fosYield": 18.42,
+      "maxDispIn": 6e-05
+    }
+  ]
+}

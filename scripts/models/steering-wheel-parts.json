@@ -1,0 +1,22 @@
+{
+  "_doc": "Exploded-view variant of steering-wheel.json for /projects/steering-wheel (chapter 01, the stack-up). Same tessellation and materials; parts are joined per group (not just per material) and each group node carries its explode offset. groups: [regex, id, axial_mm (+ = towards the driver, along the base-plate normal), lateral_mm (+ = driver's right), side? (+ or -: only parts whose centre is on that side)]. Fasteners travel with the part their head sits on; nuts with their bolts. The unnamed 2026-01-12-* parts are the electrical team's board (0.7 mm sheet, 110 x 64 mm) and its connectors, sandwiched between the two standoffs.",
+  "extends": "steering-wheel.json",
+  "dir": "steering-wheel",
+  "explode_axis_from": "^BASE_PLATE",
+  "groups": [
+    ["WHEEL_KNOB|DIAL|ROT_ENCODER|QUAD_ORING", "controls", 150],
+    ["FRONT_PANEL_LEFT|POLYCARB|91864A|ZINC", "front_panel", 105],
+    ["FRONT_PANEL_GASKET", "front_gasket", 70],
+    ["NAS_6203", "hub_bolts", 45],
+    ["DRIVER_GRIPS|FAKE_THUMB|90044A|94459A", "grip_left", 0, -95, "-"],
+    ["DRIVER_GRIPS|FAKE_THUMB|90044A|94459A", "grip_right", 0, 95, "+"],
+    ["^BASE_PLATE", "base_plate", 0],
+    ["^ENCLOSURE_GASKET", "enclosure_gasket", -35],
+    ["^STANDOFF", "standoff", -60],
+    ["^2026-01-12", "pcb", -85],
+    ["TRI_STANDOFF", "tri_standoff", -110],
+    ["SW_ENCLOSURE|2418T|91251A|94407A", "enclosure", -150],
+    ["QD_GASKET", "qd_gasket", -185],
+    ["LIFELINE_QD|LOCK_NUT_SIMPLIFIED|90715A", "qd", -215]
+  ]
+}

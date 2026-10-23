@@ -22,7 +22,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 const dmMono = DM_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-dm-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Ansh Gupta — Creator Logs",
+  title: "Ansh Gupta · Creator Logs",
   description:
     "Ansh Gupta, Systems Engineering & Design at UIUC. Things I designed in CAD, made by hand, and wrote the software for.",
 };

@@ -9,6 +9,13 @@ Run:  blender -b --factory-startup -P scripts/models/process.py -- <config.json>
 5. join meshes per material (draw calls ~ number of materials) - geometry is never simplified,
    then bake Cycles ambient occlusion into a per-vertex "_AO" attribute,
 6. export an uncompressed GLB (compression happens next, in optimize.mjs).
+
+Exploded-view variants: "groups": [[regex, id, axial_mm, lateral_mm?]] (first match wins, every part
+must match). Meshes are joined per (group, material) under one empty per group; culling runs per group
+in isolation (lossless for any rigid explode); the group's explode offset - axial along the normal of
+the "explode_axis_from" part (+ = towards the front), lateral along its long axis - is exported as the
+node's extras.explode (glTF metres), and AO is baked twice: "_AO" assembled, "_AO_X" fully exploded.
+A config may "extends" another (shallow merge, own keys win).
 """
 import json
 import math
@@ -22,7 +29,17 @@ import numpy as np
 
 argv = sys.argv[sys.argv.index("--") + 1 :]
 cfg_path, raw_path, out_path = argv[:3]
-cfg = json.load(open(cfg_path))
+
+
+def load_cfg(path):
+    c = json.load(open(path))
+    if "extends" in c:
+        base = load_cfg(os.path.join(os.path.dirname(path), c.pop("extends")))
+        c = {**base, **c}
+    return c
+
+
+cfg = load_cfg(cfg_path)
 
 
 def log(*a):
@@ -225,6 +242,42 @@ def visible_ids(objs, res, dirs):
     return seen
 
 
+def part_name(o):
+    return re.sub(r"\.\d+$", "", o.name)
+
+
+# -- 2d. exploded-view groups -------------------------------------------------------
+# A rule's optional 5th element "+"/"-" restricts it to parts whose centre lies on that side of
+# the lateral axis (left/right copies of the same fastener).
+group_of = {}
+group_rules = [(re.compile(g[0], re.I), g[1], g[2], g[3] if len(g) > 3 else 0.0, g[4] if len(g) > 4 else "")
+               for g in cfg.get("groups", [])]
+
+
+def principal_axes(objs):
+    """explode frame: axial = normal of the reference part (towards the front, Blender -Y = glTF +Z),
+    lateral = its long axis (towards +X). PCA of the part's vertices."""
+    co = np.concatenate([np.array([tuple(o.matrix_world @ v.co) for v in o.data.vertices]) for o in objs])
+    _, vecs = np.linalg.eigh(np.cov((co - co.mean(0)).T))
+    normal, long_axis = vecs[:, 0], vecs[:, 2]
+    return normal * (-1 if normal[1] > 0 else 1), long_axis * (-1 if long_axis[0] < 0 else 1)
+
+
+def side(o, lateral):
+    lo, hi = bounds([o])
+    return "+" if np.dot(np.array((lo + hi) / 2), lateral) > 0 else "-"
+
+
+if group_rules:
+    ref = re.compile(cfg["explode_axis_from"], re.I)
+    axial, lateral = principal_axes([o for o in meshes if ref.search(part_name(o))])
+    log("explode axes (Blender):", np.round(axial, 4).tolist(), np.round(lateral, 4).tolist())
+    for o in meshes:
+        match = next((g for g in group_rules if g[0].search(part_name(o)) and g[4] in ("", side(o, lateral))), None)
+        if match is None:
+            raise SystemExit(f"[process] part {o.name!r} matches no group")
+        group_of[o.name] = match[1]
+
 if cfg.get("cull_hidden", True):
     # See-through parts (windows) must not occlude: hide them during the ID pass and always keep them.
     see_through = re.compile(cfg["transparent"], re.I) if cfg.get("transparent") else None
@@ -236,10 +289,27 @@ if cfg.get("cull_hidden", True):
     ico = bpy.context.active_object
     dirs = [tuple(v.co) for v in ico.data.vertices]
     bpy.data.objects.remove(ico)
-    seen = visible_ids(meshes, cfg.get("cull_resolution", 1024), dirs)
+    res = cfg.get("cull_resolution", 1024)
+    if group_rules:
+        # Each group alone: a part only its own group hides stays hidden however far groups move.
+        hidden = []
+        for gid in dict.fromkeys(group_of.values()):
+            members = [o for o in meshes if group_of[o.name] == gid]
+            opaque = [o for o in members if o not in clear]
+            if len(opaque) < 2:
+                continue
+            others = [o for o in meshes if group_of[o.name] != gid]
+            for o in others:
+                o.hide_render = True
+            seen = visible_ids(opaque, res, dirs)
+            for o in others:
+                o.hide_render = o in clear
+            hidden += [o for i, o in enumerate(opaque, start=1) if i not in seen]
+    else:
+        seen = visible_ids(meshes, res, dirs)
+        hidden = [o for i, o in enumerate(meshes, start=1) if i not in seen and o not in clear]
     for o in clear:
         o.hide_render = False
-    hidden = [o for i, o in enumerate(meshes, start=1) if i not in seen and o not in clear]
     log(f"visibility: {len(hidden)} of {len(meshes)} parts never visible "
         f"({sum(len(o.data.polygons) for o in hidden):,} polys) -> removed")
     for o in hidden:
@@ -268,10 +338,14 @@ for o in meshes:
         mats[key] = m
     o.data.materials.clear()
     o.data.materials.append(mats[key])
-    groups.setdefault(key, []).append(o)
+    groups.setdefault((group_of.get(o.name), key), []).append(o)
 
-# -- 5. join per material ----------------------------------------------------------
-for key, objs in groups.items():
+
+explode = {gid: mathutils.Vector((axial * a_mm + lateral * l_mm) / 1000) for _, gid, a_mm, l_mm, _ in group_rules}
+
+# -- 5. join per (group,) material -------------------------------------------------------
+empties = {}
+for (gid, key), objs in groups.items():
     bpy.ops.object.select_all(action="DESELECT")
     for o in objs:
         o.select_set(True)
@@ -279,11 +353,19 @@ for key, objs in groups.items():
     if len(objs) > 1:
         bpy.ops.object.join()
     joined = bpy.context.view_layer.objects.active
-    joined.name = joined.data.name = key
+    joined.name = joined.data.name = f"{gid}:{key}" if gid else key
+    if gid:
+        if gid not in empties:
+            e = bpy.data.objects.new(gid, None)
+            bpy.context.scene.collection.objects.link(e)
+            d = explode[gid]
+            e["explode"] = [round(d.x, 6), round(d.z, 6), round(-d.y, 6)]  # glTF Y-up
+            empties[gid] = e
+        joined.parent = empties[gid]
 final = [o for o in bpy.context.scene.objects if o.type == "MESH"]
-log(f"output: {len(final)} meshes (one per material), {sum(len(o.data.polygons) for o in final):,} polys")
+log(f"output: {len(final)} meshes, {sum(len(o.data.polygons) for o in final):,} polys")
 for o in final:
-    log(f"   {o.name:28s} {len(o.data.polygons):>9,} polys")
+    log(f"   {o.name:40s} {len(o.data.polygons):>9,} polys")
 
 
 # -- 5b. ambient occlusion -> per-vertex "_AO" attribute ----------------------------------
@@ -328,7 +410,7 @@ def densify(o, max_len):
     return before, len(mesh.vertices)
 
 
-def bake_ao(objs, samples, distance):
+def bake_ao(objs, samples, distance, attr_name="_AO"):
     scene = bpy.context.scene
     scene.render.engine = "CYCLES"
     scene.cycles.samples = samples
@@ -356,8 +438,8 @@ def bake_ao(objs, samples, distance):
         src.data.foreach_get("color", rgba)  # linear
         ao = rgba.reshape(-1, 4)[:, 0].copy()
         o.data.color_attributes.remove(src)
-        o.data.attributes.new("_AO", "FLOAT", "POINT").data.foreach_set("value", ao)
-        log(f"   AO {o.name:28s} mean {ao.mean():.3f}")
+        o.data.attributes.new(attr_name, "FLOAT", "POINT").data.foreach_set("value", ao)
+        log(f"   {attr_name} {o.name:40s} mean {ao.mean():.3f}")
 
 
 if cfg.get("ao", True):
@@ -371,6 +453,15 @@ if cfg.get("ao", True):
             log(f"   split edges > {res * 1000:.1f} mm: {o.name:28s} {a:,} -> {b:,} verts")
     log(f"baking AO: {cfg.get('ao_samples', 128)} samples, distance {dist * 1000:.1f} mm")
     bake_ao(final, cfg.get("ao_samples", 128), dist)
+    if empties:
+        # fully exploded: the runtime mixes _AO -> _AO_X with the explode amount
+        for gid, e in empties.items():
+            e.location = explode[gid]
+        bpy.context.view_layer.update()
+        bake_ao(final, cfg.get("ao_samples", 128), dist, "_AO_X")
+        for e in empties.values():
+            e.location = (0, 0, 0)
+        bpy.context.view_layer.update()
 
 # -- 6. export -------------------------------------------------------------------
 os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
@@ -381,7 +472,8 @@ bpy.ops.export_scene.gltf(
     export_normals=True,
     export_texcoords=False,
     export_materials="EXPORT",
-    export_attributes=True,  # "_AO"
+    export_attributes=True,  # "_AO", "_AO_X"
+    export_extras=True,  # group nodes' "explode" offsets
     export_vertex_color="NONE",
     export_yup=True,
     export_cameras=False,

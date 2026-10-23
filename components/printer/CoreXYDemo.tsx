@@ -28,7 +28,7 @@ const L = 36;
 const R = 284;
 const TOP = 36;
 
-const spinGlyph = (s: Spin) => (s === 1 ? "↻" : s === -1 ? "↺" : "—");
+const spinGlyph = (s: Spin) => (s === 1 ? "↻" : s === -1 ? "↺" : "·");
 
 function moveLabel(a: number, b: number) {
   const dx = Math.sign(a + b);

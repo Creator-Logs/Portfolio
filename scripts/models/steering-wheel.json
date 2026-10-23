@@ -1,5 +1,5 @@
 {
-  "_doc": "Config for scripts/models/process.py. Material patterns are case-insensitive regexes on part names; first match wins. rotate_deg (Blender axes) turns the user-facing side to +Z (glTF front). Materials per Ansh 2026-10-22: carbon base plate, black plastic grips/enclosure/buttons/dials, stainless centre bolts, gold anodised aluminium quick disconnect.",
+  "_doc": "Config for scripts/models/process.py. Material patterns are case-insensitive regexes on part names; first match wins. rotate_deg (Blender axes) turns the user-facing side to +Z (glTF front). Materials per Ansh 2026-10-22: carbon base plate, black plastic grips/enclosure/buttons/dials, stainless centre bolts, gold anodised aluminium quick disconnect. The unnamed 2026-01-12-* parts are the electrical team's board (black soldermask, photo 16CBD5D0) and its components; hidden in the assembled build, shown in steering-wheel-parts.",
   "source": "assets-src/trinkets/Steering_Wheel.step",
   "up": "z",
   "transparent": "POLYCARB",
@@ -16,6 +16,8 @@
     ["94459A|HEAT.?SET", "brass"],
     ["ORING|O-RING|2418T|GASKET", "rubber_silicone", "#141414"],
     ["POLYCARB", "polycarbonate_clear"],
+    ["^2026-01-12-14-54-09-520", "pcb_soldermask", "#141414"],
+    ["^2026-01-12", "plastic_black"],
     [".*", "pla_matte", "#333333"]
   ]
 }

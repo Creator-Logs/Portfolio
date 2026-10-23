@@ -110,7 +110,7 @@ const glowMaterial = new THREE.ShaderMaterial({
   toneMapped: false,
 });
 
-function GlowBackdrop() {
+export function GlowBackdrop() {
   return (
     <mesh position={[0, 0, -0.45]} renderOrder={-1} raycast={() => null}>
       <planeGeometry args={[1.6, 1.6]} />

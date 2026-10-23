@@ -13,6 +13,7 @@ import * as THREE from "three";
 export function useWarmup(camera: RefObject<THREE.Camera | null>) {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
+  const invalidate = useThree((s) => s.invalidate);
   useEffect(() => {
     let cancelled = false;
     let idle = 0;
@@ -52,6 +53,8 @@ export function useWarmup(camera: RefObject<THREE.Camera | null>) {
           gl.setScissor(scissor);
           gl.setScissorTest(scissorTest);
           culled.forEach((o) => (o.frustumCulled = true));
+          // frameloop="demand": a scene that doesn't animate on its own needs a real frame now that it's uploaded
+          invalidate();
         };
         idle = typeof requestIdleCallback === "function" ? requestIdleCallback(run, { timeout: 2000 }) : window.setTimeout(run, 200);
       })
@@ -61,5 +64,5 @@ export function useWarmup(camera: RefObject<THREE.Camera | null>) {
       if (typeof cancelIdleCallback === "function") cancelIdleCallback(idle);
       else clearTimeout(idle);
     };
-  }, [gl, scene, camera]);
+  }, [gl, scene, camera, invalidate]);
 }

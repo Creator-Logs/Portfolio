@@ -77,6 +77,10 @@ varying vec3 vObjPos;
   attribute float _ao;
   varying float vAO;
 #endif
+#ifdef USE_VERTEX_AO_X
+  attribute float _ao_x;
+  uniform float uAOX;
+#endif
 `;
 
 const VERTEX_MAIN = /* glsl */ `
@@ -84,6 +88,9 @@ const VERTEX_MAIN = /* glsl */ `
   vObjPos = ( uWorldToModel * modelMatrix * vec4( position, 1.0 ) ).xyz;
   #ifdef USE_VERTEX_AO
     vAO = _ao;
+    #ifdef USE_VERTEX_AO_X
+      vAO = mix( _ao, _ao_x, uAOX ); // exploded-view GLBs: AO baked assembled (_ao) and fully exploded (_ao_x)
+    #endif
   #endif
 `;
 
@@ -241,11 +248,16 @@ const FRAGMENT_AO = /* glsl */ `
 #endif
 `;
 
-function decorate(mat: THREE.MeshPhysicalMaterial, detail: Detail | undefined, ao: boolean) {
+function decorate(mat: THREE.MeshPhysicalMaterial, detail: Detail | undefined, ao: boolean, aoX?: THREE.IUniform<number>) {
   const worldToModel = { value: new THREE.Matrix4() };
-  mat.defines = { ...mat.defines, ...(detail && { [`DETAIL_${detail}`]: "" }), ...(ao && { USE_VERTEX_AO: "" }) };
+  mat.defines = {
+    ...mat.defines,
+    ...(detail && { [`DETAIL_${detail}`]: "" }),
+    ...(ao && { USE_VERTEX_AO: "" }),
+    ...(ao && aoX && { USE_VERTEX_AO_X: "" }),
+  };
   mat.onBeforeCompile = (shader) => {
-    Object.assign(shader.uniforms, shaderTuning, { uWorldToModel: worldToModel });
+    Object.assign(shader.uniforms, shaderTuning, { uWorldToModel: worldToModel }, aoX && { uAOX: aoX });
     shader.vertexShader = shader.vertexShader
       .replace("#include <common>", `#include <common>\n${VERTEX_PARS}`)
       .replace("#include <begin_vertex>", `#include <begin_vertex>\n${VERTEX_MAIN}`);
@@ -266,12 +278,13 @@ function decorate(mat: THREE.MeshPhysicalMaterial, detail: Detail | undefined, a
   };
 }
 
-/** Uncached instance (caller owns + disposes it); see the note at the top. */
-export function createMaterial(preset: Preset, color?: THREE.ColorRepresentation, ao = false) {
+/** Uncached instance (caller owns + disposes it); see the note at the top.
+ *  `aoX`: the geometry also carries "_ao_x" (exploded-view AO); the uniform mixes _ao -> _ao_x (0..1). */
+export function createMaterial(preset: Preset, color?: THREE.ColorRepresentation, ao = false, aoX?: THREE.IUniform<number>) {
   const { detail, ...params } = presets[preset];
   const mat = new THREE.MeshPhysicalMaterial({ ...params, ...(color !== undefined && { color }) });
   mat.name = preset;
-  decorate(mat, detail, ao);
+  decorate(mat, detail, ao, aoX);
   return mat;
 }
 
